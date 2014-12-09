@@ -1,0 +1,61 @@
+---
+---
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <% if @item[:redirect] %>
+    <meta http-equiv="refresh" content="0; url=<%= @item[:redirect] %>">
+    <% end %>
+    <title><%= @item[:title] %></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.3.0/build/cssreset/reset-min.css">
+    <link rel="stylesheet" type="text/css" href="/assets/style.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="/assets/pyg_style.css" media="screen">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script> 
+    <script type="text/javascript">
+    	var lmail = decodeURIComponent('c%40v') + 'ikhyat.net';
+    	$(document).ready(function() {
+    		$("div.license img").before('<a href="mailto:' + lmail + '">' + lmail + '</a>').hide();
+    	});
+    </script>
+    <% if @item[:latex] %>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript">
+    	MathJax.Hub.Config({"HTML-CSS":{styles:{".MathJax .mo, .MathJax .mi":{color:"black!important"}}}}); 
+    </script>
+    <% end %>
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-13153193-1']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <a href="/"><img src="/assets/images/banner.png"></a>
+    </div>
+    <div id="navigation">
+      <ul>
+        <li><%= link_to_unless_current 'Home', '/' %></li>
+        <li><a href="/blog">Blog</a></li>
+        <li><%= link_to_unless_current 'Projects', '/projects/' %></li>
+      </ul>
+    </div>
+
+    <div id="main">
+      <h1><%= @item[:title] %></h1>
+      <%= yield %>
+      <div class="license">
+        I can be contacted at the email address: 
+        <img src="/assets/images/lmail.png" alt="c@{this-domain}.net" />.
+        There is a list of software, etc. used to build this website here:
+        <%= link_to('Credits', '/credits/') %>.
+      </div>
+    </div>
+  </body>
+</html>

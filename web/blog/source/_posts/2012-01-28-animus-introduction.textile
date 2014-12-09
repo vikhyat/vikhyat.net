@@ -1,0 +1,132 @@
+---
+layout: post
+title: "Animus Introduction"
+date: 2012-01-28 13:57
+comments: true
+categories: contest
+---
+
+This post will get you started with the contest Animus. The goal is to write a bot that will play the game "Dots and Boxes".
+
+<!-- more -->
+
+In this post I will assume that you understand the game. If you don't, please read "this page":http://exodia.in/events/online/animus/#game_description and come back.
+
+h3. Technical Details
+
+From here on, the term "size of the board" will always mean the number of dots along each edge, not the number of boxes. The game board will always be a square.
+
+Each dot is assigned a single number. The top-left dot is assigned 1, and the number is incremented by one as we move to the right (like the periodic table).
+
+The image below shows a 4×4 board, along with the labels assigned to points.
+
+{% img /images/animus_board.png %}
+
+Your submission must include a function @move@ which accepts a single parameter @board@. @board@ is an object that contains 3 members: @size@ is a single integer that denotes the size of the board, @connections@ is an array that consists of moves that have been performed so far (this is described below), and @valid_moves@ is an array of moves that your bot can legally perform at this point.
+
+Your function must return a single "move", which is basically an array of two integers which correspond to the dots you wish to connect. For example, @[1, 2]@ will connect the top left dot and the one immediately to its right. @board['valid_moves']@ and @board['connections']@ are arrays of moves of this sort.
+
+Here are two sample bots: one which will perform the first valid move it is provided, and another which will perform a random move.
+
+{% highlight js %}
+function random_element(myArray) {
+  return myArray[Math.floor(Math.random() * myArray.length)];
+}
+
+function move(board) {
+  return random_element(board.valid_moves);
+}
+{% endhighlight %}
+
+{% highlight js %}
+function move(board) {
+  return board['valid_moves'][0];
+}
+{% endhighlight %}
+
+h3. Local Development
+
+"This package":http://exodia.in/animus_local_dev.zip will allow you to test variations of your bot locally. The tool requires that Java is installed on your computer. It has been tested on OS X (Lion), Linux (Ubuntu and Arch) and Windows (Vista). It should be able to work on any other platform as well, if you are having trouble please leave a comment below.
+
+The package contains a JAR file and a directory. The JAR file should be run using the command:
+
+<pre>
+java -Djruby.compat.version=1.9 -jar local_tournament.jar [size]
+</pre>
+
+You should replace @[size]@ with the size of the map you wish to use. You should probably run it using a size of 10, because that is the map size the tournament will be using. Do _not_ omit the argument, doing so will result in the map size being set to 0, which is quite useless.
+
+h3. Results
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Score</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>egreavette</td><td>18</td>
+    </tr>
+    <tr>
+      <td>a_iitmandi</td><td>17</td>
+    </tr>
+    <tr>
+      <td>ignite</td><td>16</td>
+    </tr>
+    <tr>
+      <td>rohanag</td><td>16</td>
+    </tr>
+    <tr>
+      <td>abracadabra</td><td>8</td>
+    </tr>
+    <tr>
+      <td>animator</td><td>8</td>
+    </tr>
+    <tr>
+      <td>aounon</td><td>8</td>
+    </tr>
+    <tr>
+      <td>saikiran</td><td>8</td>
+    </tr>
+    <tr>
+      <td>saint3k</td><td>8</td>
+    </tr>
+    <tr>
+      <td>shalmezad</td><td>8</td>
+    </tr>
+    <tr>
+      <td>shapeshifter</td><td>8</td>
+    </tr>
+    <tr>
+      <td>vesper_sword</td><td>8</td>
+    </tr>
+    <tr>
+      <td>123</td><td>4</td>
+    </tr>
+    <tr>
+      <td>maggot092</td><td>4</td>
+    </tr>
+    <tr>
+      <td>randombot</td><td>4</td>
+    </tr>
+    <tr>
+      <td>rohitgupta_hpf</td><td>4</td>
+    </tr>
+    <tr>
+      <td>sukrit</td><td>3</td>
+    </tr>
+    <tr>
+      <td>chamun</td><td>2</td>
+    </tr>
+    <tr>
+      <td>gopi</td><td>2</td>
+    </tr>
+    <tr>
+      <td>shubham929</td><td>2</td>
+    </tr>
+  </tbody>
+</table>
+
+The replays can be downloaded "here":http://cl.ly/3N2S0e0f0J1K1V422T3H.

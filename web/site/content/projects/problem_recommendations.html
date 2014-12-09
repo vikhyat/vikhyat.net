@@ -1,0 +1,107 @@
+---
+title: Problem Recommendations
+---
+
+<script>
+  function get_result() {
+    $(".result").html("<em>Fetching recommendations...</em>");
+    var src = $("select[name=src]")[0].value;
+    var mode = $("select[name=mode]")[0].value;
+    var id = $("input[name^=id]").attr("value");
+    var current_url = document.URL.split("#")[0];
+
+    history.pushState({}, "", current_url+"#"+src+";"+mode+";"+id);
+
+    var url = "http://floating-sparrow.heroku.com/"+src+"/"+mode+"/"+id;
+    $.getJSON(url, function(json) { render(json); });
+  }
+  
+  function problem_url(root, id) {
+    if (root == "codechef") {
+      return "http://www.codechef.com/problems/" + id + "/";
+    }
+    else if (root == "spoj") {
+      return "http://www.spoj.pl/problems/" + id + "/";
+    }
+  }
+  
+  function render(x) {
+    var src = $("select[name=src]")[0].value;
+    if (x.length == 0) {
+      $(".results").html("No results found. If you think there is a problem please send me an email. (Email address is in the footer.)");
+    }
+    else {
+      string = "<h3>Results</h3><ol>";
+      for (id in x) {
+        string += "<li><a href='"+problem_url(src, x[id])+"' target='_blank'>"+x[id]+"</a></li>";
+      }
+      string += "</ol>";
+      $(".results").html(string);
+    }
+  }
+
+  $(document).ready(function() {
+    if ( document.URL.indexOf("#") != -1 ) {
+      var params = document.URL.split("#")[1].split(";");
+      $("select[name=src]")[0].value  = params[0];
+      $("select[name=mode]")[0].value = params[1];
+      $("input[name^=id]")[0].value   = params[2];
+      get_result();
+    }
+  });
+</script>
+
+<table>
+  <tr>
+    <td>
+      <img src="/assets/images/projects/recommendations.png" alt="" />
+    </td>
+    <td>
+      <p>This page is a web-based interface to a collaborative-filtering based problem recommendation engine that I designed for the online judges <a href="http://spoj.pl/" target="_blank">SPOJ</a> and <a href="http://codechef.com" target="_blank">CodeChef</a>. It can be used in two ways: to get a list of problems similar to a given one, or to look at the problems which you have solved and recommend other problems that you will find easy to solve.</p>
+    </td>
+  </tr>
+</table>
+
+<p>Go ahead and give it a shot! Fill out the form below and click on the <code>Submit</code> button.</p>
+
+<form>
+  <p>1. First, select which online judge you wish to get recommendations for.</p>
+  
+  <label>
+    Online Judge:
+    <select name="src">
+      <option value="codechef">CodeChef</option>
+      <option value="spoj">SPOJ</option>
+    </select>
+  </label>
+
+  <br /><br />
+  
+  <p>2. Next, select whether you want to get problems similar to a given one ("Similar Problems") or problem recommendations for a particular user ("Recommended Problems").</p>
+  <label>
+    Mode:
+    <select name="mode">
+      <option value="item">Similar Problems</option>
+      <option value="user">Recommended Problems</option>
+    </select>
+  </label>
+  
+  <br /><br />
+  
+  <p>3. Finally, enter the username or problem code depending upon what you choose above. (If you chose "Recommended Problems" you should enter a username, otherwise you should enter a problem code.) 
+    <br /><strong>Warning</strong>: This is case-sensitive; problem codes are all-caps.</p>
+  <label>
+    Identifier: 
+    <input type="text" name="id" />
+  </label>
+  
+  <br /><br />
+  
+  <p>4. Now hit Submit!</p>
+  <label>
+    <input type="submit" onclick="get_result(); return false;">
+  </label>
+</form>
+
+<blockquote class="results">
+</blockquote>

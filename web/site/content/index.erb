@@ -1,0 +1,67 @@
+---
+title: Vikhyat Korrapati
+---
+
+<p>Hi there! I am an undergraduate student studying Computer Science at <a href="http://www.iitmandi.ac.in/" target="_blank">IIT Mandi</a>. I have a passion for building things, and enjoy Programming, Mathematics, Design and Photography. In my free time, I write code and play the guitar.</p>
+
+<div class="connect">
+  <h2>Social Media</h2>
+  <table>
+    <tr>
+      <td>
+        <ul>
+          <li><a href="http://github.com/vikhyat" target="_blank">
+            <img src="/assets/images/github_16.png" alt=""> Github
+          </a></li>
+          <li><a href="http://facebook.com/vikhyatk" target="_blank">
+            <img src="/assets/images/facebook_16.png" alt=""> Facebook
+          </a></li>
+          <li><a href="http://in.linkedin.com/in/vikhyatk" target="_blank">
+            <img src="/assets/images/linkedin_16.png"> LinkedIn
+          </a></li>
+        </ul>
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td>
+        <ul>
+          <li><a href="http://celebrus.deviantart.com/" target="_blank">
+            <img src="/assets/images/deviantart_16.png" alt=""> DeviantArt
+          </a></li>
+          <li><a href="https://twitter.com/#!/vikhyatk" target="_blank">
+            <img src="/assets/images/twitter_16.png" alt=""> Twitter
+          </a></li>
+          <li><a href="http://www.youtube.com/user/Omikron9861" target="_blank">
+            <img src="/assets/images/youtube_16.png" alt=""> YouTube
+          </a></li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<blockquote>
+  “We call ourselves Homo sapiens–man the wise–because our intelligence is so important to 
+  us. For thousands of years, we have tried to understand how we think: that is, how a mere 
+  handful of matter can perceive, understand, predict, and manipulate a world far larger and 
+  more complicated than itself.” 
+  <br /> — Stuart J. Russell
+</blockquote>
+
+<script>
+  var lastjson = {"author": "stub", "text": "stub"};
+  
+  function newQuote() {
+    $.getJSON("http://quoteservice.herokuapp.com/", function(json) {
+      if (json["text"] != lastjson["text"]) {
+        $("blockquote").slideUp(function() {
+          $("blockquote").html("“" + json["text"] + "”<br />— " + json["author"])
+                        .slideDown();
+        });
+        lastjson = json;
+      }
+    });
+    setTimeout("newQuote()", 25000);
+  }
+  
+  newQuote();
+</script>

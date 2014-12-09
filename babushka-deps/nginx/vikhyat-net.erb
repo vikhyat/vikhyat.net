@@ -1,0 +1,43 @@
+upstream thin {
+  server 127.0.0.1:3000;
+  server 127.0.0.1:3001;
+  server 127.0.0.1:3002;
+}
+
+server {
+  server_name www.vikhyat.net;
+  rewrite ^/(.*)$ http://vikhyat.net/$1 permanent;
+}
+
+server {
+  server_name app.vikhyat.net;
+  add_header Access-Control-Allow-Origin *;
+  location / {
+    proxy_pass http://thin;
+    break;
+  }
+}
+
+server {
+  listen 80;
+  server_name .vikhyat.net;
+
+  error_page 404 /404.html;
+
+  root /var/www;
+  index index.html;
+
+  location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
+    expires 24h;
+    break;
+  }
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+
+  location /dyn {
+    rewrite ^/dyn/(.*)$ http://app.vikhyat.net/$1 permanent;
+    break;
+  }
+}

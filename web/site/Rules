@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+route('/sitemap/') { '/sitemap.xml' }
+compile('/sitemap/') { filter :erb }
+
+route('/404/') { '/404.html' }
+
+route('/static/*') do
+  item.identifier.chop.gsub("/static", "") + '.' + (item[:extension] ||'')
+end
+compile('/static/*') {}
+
+route('*') { item.identifier + 'index.html' }
+compile('*') do
+  filter :erb
+  layout 'default'
+end
+
+layout '*', :erb

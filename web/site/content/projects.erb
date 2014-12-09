@@ -1,0 +1,96 @@
+---
+title: Projects
+---
+
+<p>Here's a list of stuff I am working on or have worked on in the past.</p>
+
+<h2>Featured</h2>
+
+<h3><%= link_to 'Problem Recommendations', '/projects/problem_recommendations/' %> <small class="date">(2012)</small></h3>
+<table>
+  <tr>
+    <td>
+      <img src="/assets/images/projects/recommendations.png" alt="" />
+    </td>
+    <td>
+      <p>A problem recommendation engine for the online judges <a href="http://spoj.pl/" target="_blank">SPOJ</a> and <a href="http://codechef.com/" target="_blank">CodeChef</a>. For each problem uploaded to the online judge in question, it considers the set of users who solved that problem and uses this information to determine the 'similarity' of any two given problems. This technique is called collaborative filtering. It can be used in two modes: to get back a list of problems similar to a given problem, or to recommend problems that a user can solve easily by considering the problems that the user has already solved so far.</p>
+    </td>
+  </tr>
+</table>
+
+<h3><a href="https://github.com/vikhyat/consulo" target="_blank">Consulo</a> <small class="date">(2012)</small></h3>
+<table>
+  <tr>
+    <td>
+      <img src="/assets/images/projects/consulo.png" alt="" />
+    </td>
+    <td>
+      <p>A two-tier SNMP poll manager that I worked on as a project for a course on Network Management. It uses ZeroMQ for communication between all of the components involved, and MessagePack for serialization. Its key features are the automatic optimal assignment of network elements to lower-level data collectors, and a convenient RESTful API to make it easier to build applications on top of the poll manager. A real-time graphing application is included as a demonstration of how simple it is to write an application that uses this polling server.</p>
+    </td>
+  </tr>
+</table>
+
+<h3><a href="http://exodia.in/" target="_blank">Exodia Website</a> <small class="date">(2012)</small></h3>
+<table>
+  <tr>
+    <td>
+      <img src="/assets/images/projects/exodia.png" alt="" />
+    </td>
+    <td>
+      <p>Exodia is the name of IIT Mandi's annual technical and cultural festival. During January and February 2012, I had the privilege of working alongside some very talented individuals to build the website for the very first installment of Exodia!</p>
+    </td>
+  </tr>
+</table>
+
+<h3><%= link_to 'LaTeX to Unicode Converter', '/projects/latex_to_unicode/' %> <small class="date">(2011)</small></h3>
+<table>
+  <tr>
+    <td>
+      <img src="/assets/images/projects/latex_to_unicode.png" alt="" />
+    </td>
+    <td>
+      <p>A program for translating LaTeX math markup to a human-readable form using Unicode characters wherever possible. It can be used as a command line application, through the web interface or as an extension to Google Chrome. (The Google Chrome extension uses the web-based interface.) <a href="http://treetop.rubyforge.org/" target="_blank">Treetop</a> is used for generating the parser, and both the web interface and the program itself are written in Ruby.</p>
+    </td>
+  </tr>
+</table>
+
+<h3><%= link_to 'Signature Gallery', '/stuff/signature_gallery/' %> <small class="date">(2008)</small></h3>
+<table>
+  <tr>
+    <td>
+      <img src="/assets/images/projects/signature_gallery.png" alt="" />
+    </td>
+    <td>
+      <p>A gallery of "signatures" that I created a couple of years ago. They are primarily intended for usage in the signature section of online forums, but to quote Wikipedia, "Signatures are seen as an art form by many of their creators, and there are many websites centered around their creation and display. Some of these websites have competitions where members submit their entries to have them featured on the website.".</p>
+    </td>
+  </tr>
+</table>
+
+<h2>Other Work</h2>
+
+<h3><%= link_to 'Social Graph', '/projects/social_graph/' %> <small class="date">(2011)</small></h3>
+<table>
+  <tr>
+    <td>
+      <img src="/assets/images/projects/social_graph.png" alt="" />
+    </td>
+    <td>
+      <p>Just me playing around with the Facebook API. This tool will go through all of your friends and output a <code>DOT</code> file that describes the mutual friendships between your friends. The generated file can then be converted to an image using <a href="http://www.graphviz.org/" target="_blank">Graphviz</a>. It is quite interesting to observer the cliques in the graph that indicate different circles of friends.</p>
+    </td>
+  </tr>
+</table>
+
+<h3><%= link_to 'Random Latin Words', '/stuff/velox/' %></h3>
+<p>Get a random Latin word! I find myself using this fairly often to find names for projects.</p>
+
+<h3><a href="http://github.com/vikhyat/theca" target="_blank">Theca</a> <small class="date">(2010)</small></h3>
+<p>A tiny command-line frontend for MPG123. I wrote it because I wanted an extremely simple and lightweight MP3 player and couldn't find anything that fit what I had in mind.</p>
+
+<h3><a href="http://github.com/vikhyat/zenity.rb" target="_blank">Zenity.rb</a> <small class="date">(2009)</small></h3>
+<p>A Rubygem that allows using <a href="http://freshmeat.net/projects/zenity">Zenity</a> from Ruby scripts. This makes it easy for a script to use GTK+ dialogs to get input from the user or to display notifications.</p>
+
+<h3><a href="http://github.com/vikhyat/similar-sounding-words" target="_blank">Similar Sounding Words</a> <small class="date">(2009)</small></h3>
+<p>It turns out that the Soundex algorithm, used together with the Levenshtein distance algorithm to generate a list of words similar to any given word works pretty well!</p>
+
+<h3><a href="http://github.com/vikhyat/ai-contest-ruby" target="_blank">Ruby Starter Pack - Google AI Challenge</a> <small class="date">(2010)</small></h3>
+<p>The Ruby starter pack for the 2010 Google AI Challenge, in which the game was Planet Wars.</p>

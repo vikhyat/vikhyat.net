@@ -1,0 +1,101 @@
+--- 
+title: Convergence Tests of Infinite Series
+latex: true
+created_at: 2011-09-04
+redirect: http://vikhyat.net/blog/archives/2011/09/04/convergence-tests/
+---
+
+<h2>Positive Term Series</h2>
+
+<h3>Integral Test</h3>
+
+<p>Let \( \sum a_n \) be a positive term series, and let \( a_n = f(n) \) such
+that \( f(n) \) decreases as \( n \) increases. Then \( \sum a_n \) converges
+or diverges if \( \int_1^\infty f(x) dx \) is finite or infinite respectively.
+</p>
+
+<h3>p-Series Test</h3>
+
+<p>Let \( \sum a_n \) be a positive term series given by \(a_n = \frac1{n^p} \).
+Then, \( \sum a_n \) is convergent if \( p \gt 1 \), and divergent if \( p \leq
+1 \).</p>
+
+<h3>Comparison Test</h3>
+
+<p>Let \(\sum a_n \) be a positive term series, then:</p>
+<ol>
+  <li>\( \sum a_n \) is convergent if \( \sum b_n \) is another convergent
+  series with \( a_n \leq b_n \).</li>
+  <li>\( \sum a_n \) is divergent if \( \sum d_n \) is another divergent
+  series with \( a_n \geq d_n \).</li>
+</ol>
+
+<h3>Limit Comparison Test</h3>
+
+<p>Let \( \sum a_n \) and \(\sum b_n \) be two positive term series.</p>
+
+<ol>
+  <li>If \( \lim_{n \rightarrow \infty} \frac{a_n}{b_n} \) is a finite and
+  non-zero positive quantity, then \( \sum a_n \) and \(\sum b_n\) will converge
+  and diverge together.</li>
+  <li>If \( \lim_{n \rightarrow \infty} \frac{a_n}{b_n} = 0 \) and \(\sum b_n \)
+  is convergent, then \( \sum a_n \) is also convergent.</li>
+  <li>If \(\lim_{n \rightarrow \infty} \frac{a_n}{b_n} = \infty \) and
+  \( \sum b_n \) is divergent, then \(\ sum a_n \) is also divergent.</li>
+</ol>
+
+<h3>D'Alembert's Ratio Test / Ratio Test</h3>
+
+<p>Let \( \sum a_n \) be a positive term series, and let
+\( \lim_{n \rightarrow \infty} \frac{a_{n+1}}{a_n} = r \).</p>
+<ol>
+  <li>The series is convergent if \( r \lt 1 \).</li>
+  <li>The series is divergent if \( r \gt 1 \), or if \(r\) is infinite.</li>
+  <li>The test fails if \(r=1\).</li>
+</ol>
+
+<h3>Cauchy's Root Test / Root Test</h3>
+
+<p>Let \( \sum a_n \) be a positive term series, and 
+\( \lim_{n \rightarrow \infty} (a_n)^{\frac1n} = r \).</p>
+
+<ol>
+  <li>The series is convergent if \( r \lt 1 \).</li>
+  <li>The series is divergent if \( r \gt 1 \).</li>
+  <li>The test fails if \( r = 1 \).</li>
+</ol>
+
+<h3>Raabe's Test</h3>
+
+<p>Let \( \sum a_n \) be a positive term series, and
+\( \lim_{n \rightarrow \infty} n \left( \frac{a_n}{a_{n+1}}-1 \right) = k\).</p>
+
+<ol>
+  <li>The series is convergent if \( k \gt 1 \).</li>
+  <li>The series is divergent if \( k \lt 1 \).</li>
+  <li>The test fails if \( k = 1 \).</li>
+</ol>
+
+<h3>Logarithmic Test</h3>
+
+<p>Let \( \sum a_n \) be a positive term series, and 
+\( \lim_{n \rightarrow \infty} \log\left( \frac{a_n}{a_{n+1}} \right) = k\).</p>
+
+<ol>
+  <li>The series is convergent if \( k \gt 1 \).</li>
+  <li>The series is divergent if \( k \lt 1 \).</li>
+  <li>The test fails if \( k = 1 \).</li>
+</ol>
+
+<h2>Alternating Series</h2>
+
+<h3>Leibniz's Test</h3>
+
+<p>If the series \( \sum (-1)^n a_n \) is an alternating series, then the series
+is convergent if:</p>
+
+<ol>
+  <li>Each term is numerically lesser than the preceeding term. 
+  ( \( |a_{n+1}| \lt |a_n| \) )</li>
+  <li>\( \lim_{n \rightarrow \infty} a_n = 0 \).</li>
+</ol>

@@ -1,0 +1,36 @@
+# coding: utf-8
+
+task :default => [:compile_nanoc, :compile_blog, :compile_application]
+
+task :compile_nanoc do
+  system "
+    cd site/ &&
+    bundle exec nanoc co &&
+    rm -rf ../Output/Vikhyat &&
+    cp -R \"output\" \"../Output/Vikhyat\" &&
+    cd ..
+  "
+end
+
+task :compile_blog do
+  system "
+    cd blog/ &&
+    bundle exec jekyll build &&
+    find _site | xargs -n 1 ./compress.rb &&
+    rm -rf ../Output/Vikhyat/blog &&
+    mkdir -p ../Output/Vikhyat/blog &&
+    cp -R _site/ ../Output/Vikhyat/blog &&
+    cd ..
+  "
+end
+
+task :compile_application do
+  system "
+    rm -rf Output/Application &&
+    cp -R Application Output/Application
+  "
+end
+
+task :clean do
+  system "rm -rf Output/ && mkdir Output"
+end

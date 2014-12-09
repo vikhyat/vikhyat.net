@@ -1,0 +1,187 @@
+---
+layout: post
+title: "Distributed Web Scraping with StormyCloud and Ruby"
+date: 2012-07-18 20:36
+comments: true
+categories: programming ruby distributed
+---
+
+"StormyCloud":https://github.com/vikhyat/StormyCloud is an open-source framework designed to make writing simple distributed programs in Ruby very easy. In this post, we explore how to use StormyCloud for web scraping.
+
+<!-- more -->
+
+h2. The Scenario
+
+The results of a certain very popular examination has just been released. The system for allowing candidates to access the results online is curiously hosted on a free instance over at "Heroku":http://results.herokuapp.com/. Everyone who took the exam is curious to know how they stack up against their peers and everyone in the general public wants to know how someone they know performed. Unfortunately, the results interface requires knowing the roll number of the candidate whose result you wish to view. This is problematic, so we wish to scrape the results website and create a list that allows people to view the result _by name_ as opposed to _by roll number_.
+
+The range of valid roll numbers is from 2 to 9999. While this range is small enough that building a distributed web crawler would be massive overkill, the range of roll numbers in real world applications is going to be large enough that any other method would take way too long to finish crawling.
+
+h2. StormyCloud Overview
+
+In StormyCloud, you break up your problems into 4 different parts: @split@, @map@, @reduce@ and @finally@.
+
+@split@ breaks your problem into a number of smaller sub-problems that can be executed in parallel. @map@ will execute a single sub-problem. As the result of each computation comes in, @reduce@ is run with the task and the result -- this is a good place to save results however you like. Once the job is complete, the optional @finally@ code is called.
+
+{% highlight ruby %}
+require 'stormy-cloud'
+
+StormyCloud.new("square_summation", "10.6.2.213") do |c|
+
+  c.split { (1..1000).to_a }
+
+  c.map do |t|
+    sleep 2   # do some work
+    t ** 2
+  end
+
+  c.reduce do |t, r|
+    @sum ||= 0
+    @sum += r
+  end
+
+  c.finally do
+    p @sum
+  end
+
+end
+{% endhighlight %}
+
+Let's go through this example step-by-step. We specify (on line 3) a string that describes the job and the IP address of the central server. The @split@ block specifies how to break the problem into a number of sub-problems -- in this case it returns an array consisting of the numbers 1 to 1000.
+
+The @map@ block accepts a single task, does whatever work needs to be done and returns the result. In this case, it sleeps for 2 seconds to simulate doing work and returns the square of the number.
+
+The @reduce@ block is called with a task and its result the moment the central server recieves the result of the computation from a node. Instance variables will persist between calls of the @reduce@ block -- in this case we set up an instance variable called @@sum@. (For those of you who are not familiar with Ruby, instance variables are the ones which start with an @@@ sign, and @@sum ||= 0@ basically means "if the variable @@sum@ has not been set, initialize it to 0". It is basically like lazy instantiation.)
+
+The @finally@ block is called after all the central server has recieved the solution to all of the sub-tasks. It is not _mandatory_ to specify the @finally@ block, but it is nice to do so because the value returned by this block is considered the result of the computation and will be displayed in the dashboard.
+
+The @split@, @reduce@ and @finally@ blocks are run on a central server, which coordinates with an arbitrary number of worker nodes that run @map@ on tasks. 
+
+h2. Installing StormyCloud
+
+StormyCloud is packaged as a Ruby gem. First, make sure that all machines involved have a recent version of Ruby installed (I've only tested 1.9.3).
+
+You need to install the Sinatra and MessagePack gems in addition to StormyCloud, so run something like
+
+pre. $ gem install sinatra msgpack stormy-cloud
+
+Depending on your system you might have to prefix a @sudo@ or @rvm all do@ to that command.
+
+h2. Running an Example
+
+Save the following code as @square_summation.rb@.
+
+{% highlight ruby %}
+require 'stormy-cloud'
+
+StormyCloud.new("square_summation", "localhost") do |c|
+  c.config :debug, true
+
+  c.split { (1..1000).to_a }
+
+  c.map do |t|
+    t ** 2
+  end
+
+  c.reduce do |t, r|
+    @sum ||= 0
+    @sum += r
+  end
+
+  c.finally do
+    p @sum
+  end
+
+end
+{% endhighlight %}
+
+This the exact same example from before, except that the sleep has been removed, the address of the central server has been changed to "localhost" and the code has been configured to run in debug mode. Now, in your terminal, run:
+
+pre. $ ruby square_summation.rb
+
+After a short time, you will see the result 333833500. In debug mode, the code is run sequentially on a single machine. It is useful to run a subset of the problem in debug mode to test your code. 
+
+Now, let's run it in distributed mode. Remove the line @c.config :debug, true@, save the file and run:
+
+pre. $ ruby square_summation.rb server
+> My identifier is e774c67612a5e4fce61c96897960f83f.
+> Running in server mode.
+>
+>>> Starting dashboard.
+== Sinatra/1.3.2 has taken the stage on 4567 for development with backup from Thin
+>> Thin web server (v1.4.1 codename Chromeo)
+>> Maximum connections set to 1024
+>> Listening on 0.0.0.0:4567, CTRL+C to stop
+
+You can now navigate to the "dashboard":http://localhost:4567/ to check out the progress of the job.
+
+Spawn a few nodes on your computer by running the following command a few times:
+
+pre. $ ruby square_summation.rb node
+
+{% img /images/stormycloud_dashboard.png %}
+
+h2. Building a Distributed Web Scraper
+
+Let's get back to the original problem, scraping results.
+
+Luckily, a web scraper fits into the StormyCloud paradigm with a lot of ease. We "split" the problem into a task for each roll number. We "map" over each task, returning an array of the candidate's name and result. We "reduce" these results by writing them to text file, and omit the finally block.
+
+The only work left to do at this point is to actually get the result for a given roll number; we do this using Net::HTTP. We drop down to @irb@ to play around a bit.
+
+{% highlight ruby %}
+1.9.3-p194 :001 > require 'net/http'
+ => true 
+1.9.3-p194 :002 > uri = URI('http://results.herokuapp.com/result')
+ => #<URI::HTTP:0x007f8b238a97a0 URL:http://results.herokuapp.com/result> 
+1.9.3-p194 :003 > res = Net::HTTP.post_form(uri, 'rno' => '4')
+ => #<Net::HTTPOK 200 OK  readbody=true> 
+1.9.3-p194 :004 > p res.body
+"<h1>Result</h1>\n    <p>The name is <strong>bitobi</strong>.</p>\n    <p>The result is <strong>13862</strong>.</p>\n    <a href='/'>Back</a>"
+ => "<h1>Result</h1>\n    <p>The name is <strong>bitobi</strong>.</p>\n    <p>The result is <strong>13862</strong>.</p>\n    <a href='/'>Back</a>" 
+1.9.3-p194 :005 > res.body.split('</strong>')
+ => ["<h1>Result</h1>\n    <p>The name is <strong>bitobi", ".</p>\n    <p>The result is <strong>13862", ".</p>\n    <a href='/'>Back</a>"] 
+1.9.3-p194 :006 > res.body.split('</strong>')[1..2]
+ => [".</p>\n    <p>The result is <strong>13862", ".</p>\n    <a href='/'>Back</a>"] 
+1.9.3-p194 :007 > res.body.split('</strong>')[0..1]
+ => ["<h1>Result</h1>\n    <p>The name is <strong>bitobi", ".</p>\n    <p>The result is <strong>13862"] 
+1.9.3-p194 :008 > res.body.split('</strong>')[0..1].map {|x| x.split('<strong>')[1] }
+ => ["bitobi", "13862"] 
+{% endhighlight %}
+
+This leads to the following code. We initially scrape the results for only a subset of the roll numbers in debug mode to make sure everything works alright.
+
+{% highlight ruby %}
+require 'stormy-cloud'
+require 'net/http'
+
+StormyCloud.new("web_scraper", "localhost") do |c|
+  c.config :debug, true
+
+  c.split { (2..5).to_a }
+
+  c.map do |roll_number|
+    uri = URI('http://results.herokuapp.com/result')
+    res = Net::HTTP.post_form(uri, 'rno' => roll_number.to_s)
+    res.body.split('</strong>')[0..1].map {|x| x.split('<strong>')[1] }
+  end
+
+  c.reduce do |roll_number, result|
+    File.open('result', 'a') do |f|
+      f.puts "#{roll_number} #{result * ' '}"
+    end
+  end
+end
+{% endhighlight %}
+
+Note that we don't need to manually handling locking the @result@ file in the @reduce@ block, because StormyCloud does that for you using a Mutex. Running the code, we can see that it works correctly.
+
+pre. $ ruby web_scraper.rb
+$ cat result 
+2 bekube 6931
+3 bihewo 10986
+4 bitobi 13862
+5 bofuzu 16094
+
+Since we can see that the code works correctly, we can now set up the code to run in parallel. To do so, we only need to change "localhost" to the correct IP address of the central server and update the @split@ block to cover the entire range of roll numbers. After this all that is left to do is to copy @web_scraper.rb@ to each of the workers and spawn a node after starting the central server.
+
+Go ahead and try it out! :)

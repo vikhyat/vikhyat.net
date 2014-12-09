@@ -1,0 +1,83 @@
+<html>
+  <head>
+    <title>Aliquot - Text Editor</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <link href='http://fonts.googleapis.com/css?family=Neuton&subset=latin' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Inconsolata&subset=latin' rel='stylesheet' type='text/css'>
+    <style type="text/css">
+      body {
+        text-align: center;
+        margin: 0;
+        background: #EAF2E6;
+      }
+      #page {
+        width: 600px;
+        margin: 0 auto;
+        background: #D2E0CC;
+        text-align: left;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+        font-family: 'Neuton', serif;
+        font-size: 36px;
+        color: #040A03;
+      }
+      textarea {
+        width: 100%;
+        font-family: DejaVu Sans, Bitstream Vera Sans, Segoe UI, Lucida Grande, Verdana, Tahoma, Arial, sans-serif;
+        font-size: 1em;
+        background: #EAF2E6;
+      }
+      div.ed {
+        padding: 5px 5px 5px 5px;
+        background: #B1C4A7;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+      }
+      p.autogen {
+        padding: 0;
+        margin: 0;
+        text-align: right;
+        font-family: 'Inconsolata', monospace;
+        font-size: 0.8em;
+        color: #3D4D3B;
+      }
+      p.footer {
+        padding: 20px;
+        margin: 20px;
+        text-align: center;
+        font-family: 'Inconsolata', monospace;
+        font-size: 0.8em;
+        color: #3D4D3B;
+      }
+      a:link, a:visited, a:active {
+        color: #455E42;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="page">
+      <h1>aliquot</h1>
+      <div class="ed">
+        <textarea rows="20"></textarea>
+        <p class="autogen">0 words; 0 characters.</p>
+      </div>
+      <p class="footer">
+        Created by 
+        <a href="http://vikhyat.net/">Vikhyat Korrapati</a>
+      </p>
+    </div>
+    <script>
+      function wordcount() {
+        return $("textarea")[0].value.split(" ").length;
+      }
+      function charcount() {
+        return $("textarea")[0].value.length;
+      }
+      $("textarea").keyup(function(x) {
+        $("p.autogen").text( wordcount() + " words; " + charcount() + " characters.");
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,179 @@
+---
+layout: post
+title: "Dementia 2012: Comments and Solutions"
+date: 2012-01-22 00:02
+comments: true
+categories: code algorithm contest
+---
+
+The 6 hours programming contest has finally ended! Congratulations to the winners. 
+
+<!-- more -->
+
+h2. Spiral Numbers
+
+Dennis is programming a robot that is supposed to paint a horizontal line. Not being one to care much about efficiency, Dennis programs the robot to move in an anti-clockwise spiral as shown below.
+
+{% img /images/spiral_numbers.png %}
+
+The robot starts at position zero, then moves to position 1, then position 2 and so on. Dennis wants all of the tiles to the right of 0 to be painted black. (These tiles are represented as bold numbers in the figure above.)
+
+Your task is to help Dennis by telling him which is the nth tile that must be painted black, with the zeroth tile being zero.
+
+h3. Comments and Solution
+
+The spiral in this problem is constructed in the same way as "Ulam's Spiral":http://en.wikipedia.org/wiki/Ulam_spiral. With a little bit of derivation, you can see that the nth spiral number is given by \(4n^2 - 3n\).
+
+{% highlight ruby %}
+gets.to_i.times do
+  n = gets.to_i
+  puts 4*n*n - 3*n
+end
+{% endhighlight %}
+
+h2. Counting Stars
+
+Galileo's latest project involves determining the density of stars in certain regions of the sky. For this purpose he started looking for datasets online, and discovered a dataset on Newton's blog. Newton had decomposed the night sky into a Voronoi tessellation with the generators arranged in a grid. He has stored the number of stars in a Voronoi cell at a position in a matrix that corresponds to the position of the generator in the grid.
+
+This dataset does not directly help Galileo, because he needs to be able to query the number of stars in a rectangular portion of the sky. Galileo tried to write a program that does this on his own, but it turned out to be too slow. Can you help him?
+
+h3. Comments and Solution
+
+This problem would have been far more interesting with a stricter time limit. As it is now, even solutions that take the naive approach of looping over the relevant section each time would be accepted. A more efficient way of solving this problem (given that there would be a large number of queries for a single dataset) would be to construct a "dominance matrix", in which each element of the matrix @D[x][y]@ is the sum of all elements of the dataset @A[i][j]@ with \(i \leq x\) and \(j \leq y\). Using this approach, the doubly nested loop in the naive approach can be replaced with four array lookups. 
+
+{% highlight ruby %}
+a, b = gets.split.map {|x| x.to_i }
+data = []
+
+a.times do
+  data << gets.split.map {|x| x.to_i }
+end
+
+gets.to_i.times do
+  px, py, qx, qy = gets.split.map {|x| x.to_i }
+  sum = 0
+  for x in (px-1)..(qx-1)
+    for y in (py-1)..(qy-1)
+      sum += data[x][y]
+    end
+  end
+  puts sum
+end
+{% endhighlight %}
+
+h2. Protecting Sheep
+
+Useless Fencing Inc. has recently scored a contract to create a fence around a bunch of sheep in light of recent wolf attacks. As implied by their name, Useless Fencing tries to use as little fencing material as possible.
+
+In order to determine the location of each of the sheep, Useless Fencing has deployed a system consisting of laser range-finders. This has given them the location of each of the sheep, however because of errors inherent in the system, they only know that each of the sheep is inside a square of side 2 units. (Note that the orientation of all of these squares is identical, and the coordinate system has been selected so that each of the sides are parallel to one of the axes.)
+
+The sheep are rather lazy (they never move), but none of them should be left outside the fence. Your task is to determine the minimum possible length of the fence.
+
+h3. Comments
+
+This problem boils down to finding the "Convex Hull":http://en.wikipedia.org/wiki/Convex_hull. Finding the convex hull of a set of points in a plane can be thought of as stretching a rubber band so that it covers all of the points, and then releasing it so that it becomes taut. "This image":http://upload.wikimedia.org/wikipedia/commons/d/de/ConvexHull.svg will probably be helpful in understanding the rubber band analogy.
+
+There is a slight twist, however, the set of points to be considered is not the set of sheep coordinates, rather it is the set of all of the vertices of the squares that contain the sheep. In other words, each of the given center coordinates of the sheep would be transformed into four different points as illustrated by the image below, and this transformation should be applied to each one of the sheep coordinates. We would then find the length of the convex hull of the resulting set of coordinates, which would contain 4 times as many points as the original set of coordinates.
+
+{% img /images/protecting_sheep.png %}
+
+"Jarvis's march":http://en.wikipedia.org/wiki/Gift_wrapping_algorithm will suffice for solving this problem, but you may also consider more sophisticated algorithms like the Graham's Scan. Jarvis's march is much simpler to implement, and choosing it over Graham's Scan means that precious time is saved.
+
+h2. Gray Codes
+
+Gray codes were invented to prevent spurious output from electromagnetic switches. Consider the number 3 in ordinary binary encoding: when incremented from 011 to 100 it is unlikely that all of the switches will change states at the same time, so there is a possibility of reading the state of the variable while it is in between a transition (i.e., when some of the bits have flipped to the correct value but others haven't).
+
+To solve this problem, Frank Gray introduced a new number system in which successive numbers differ by only a single bit.
+
+You are working on a legacy system that uses Gray codes, but are having difficulty fixing a bug related to multiplication of numbers. For the purpose of debugging, you wish to convert a number's Gray encoding into the corresponding decimal representation.
+
+h3. Comments and Solution
+
+"This page":http://en.wikipedia.org/wiki/Gray_code#History_and_practical_application has a number of interesting applications of Gray Codes. I think Karnaugh maps are the most interesting, they are used to solve boolean minimization (the problem of minimizing logical circuitry).
+
+{% highlight c %}
+#include <stdio.h>
+ 
+int gray_decode(int n) {
+    int p = n;
+    while (n >>= 1) p ^= n;
+    return p;
+}
+ 
+int main() {
+  int t, c;
+  scanf("%d\n", &t);
+  while (t--) {
+    scanf("%d\n", &c);
+    printf("%d\n", gray_decode(c));
+  }
+  return 0;
+}
+{% endhighlight %}
+
+h2. nCr as a Service
+
+To test a new cloud computing service, you decide to write a program that generates the Pascal Triangle in a distributed fashion.
+
+You wish to estimate the amount of network traffic that would be expected between nodes. Since the nodes exchange the computed values in base 10, you want to know the number of digits in the base-10 representation of nth row and rth column of Pascal's triangle. Since your program internally represents these in base-2, you also wish to know the number of digits in the base-2 representation to get an idea of the memory usage involved.
+
+h3. Comments and Solution
+
+The name of this problem is a play on the term "Software as a Service":http://en.wikipedia.org/wiki/Software_as_a_service. The number of digits a number \(n\) has in base \(b\) is \( \lfloor \log_b \left( n \right) \rfloor + 1 \).
+
+{% highlight ruby %}
+def ncr(n, r)
+  a, b = r, n-r
+  a, b = b, a if a < b  # a is the larger
+  numer = (a+1..n).inject(1) { |t,v| t*v }  # n!/r!
+  denom = (2..b).inject(1) { |t,v| t*v }    # (n-r)!
+  numer / denom
+end
+
+def ncrdigs_naive(n, r, base)
+  ncr(n, r).to_s(base).length
+end
+
+gets.to_i.times do
+  n, r = gets.split.map {|x| x.to_i }
+  puts "#{ncrdigs_naive(n,r, 10)} #{ncrdigs_naive(n,r,2)}"
+end
+{% endhighlight %}
+
+h2. Balanced Primes
+
+A balanced prime is one which is the average of the previous and the next prime number. Your task in this problem is to write a program that can calculate the nth balanced prime.
+
+h3. Comments and Solution
+
+This is the sort of problem that looks like it was meant to be solved in Haskell.
+
+{% highlight haskell %}
+minus (x:xs) (y:ys) = case (compare x y) of 
+           LT -> x : minus  xs  (y:ys)
+           EQ ->     minus  xs     ys 
+           GT ->     minus (x:xs)  ys
+minus  xs     _     = xs
+
+primesPE = 2 : primes'
+  where 
+    primes' = sieve [3,5..] 9 primes'
+    sieve (x:xs) q ps@ ~(p:t)
+      | x < q     = x : sieve xs q ps
+      | otherwise =     sieve (xs `minus` [q, q+2*p..]) (head t^2) t
+
+primes_triplet = map f [1..]
+  where f x = (primesPE !! (x - 1), primesPE !! x, primesPE !! (x + 1))
+
+balanced_primes = map g $ filter f primes_triplet
+  where f (a,b,c) = 2 * b == a + c
+        g (a,b,c) = b
+
+main = interact g
+  where g x = unlines $ map show $ map nbp $ drop 1 $ lines x
+        nbp x = balanced_primes !! ((read x) - 1)
+{% endhighlight %}
+
+The first two definitions (@minus@ and @primesPE@) are taken verbatim from  "this page":http://www.haskell.org/haskellwiki/Prime_numbers. There are far more efficient implementations on that page that can be dropped in, and doing so will make the program run faster, because generation of primes is the bottleneck. @primesPE@ is an infinite list of primes. @primes_triplet@ uses @primesPE@ to create another list that contains triplets of prime numbers. @balanced_primes@ applies a filter to this list of triplets, selecting only those for which twice the middle element is the sum of the extreme elements, and then selecting only the middle elements of those triplets. The final definition, @main@, handles IO and can be ignored.
+
+The infinite lists take care of memoization, so that values will not be unnecessarily recomputed. The Haskell code sample above feels almost like _declarative_ programming, in which you specify what you want computed rather than how to compute it.

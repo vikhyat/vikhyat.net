@@ -1,0 +1,45 @@
+---
+title: LaTeX to Unicode
+---
+
+<script type="text/javascript">
+  function get_result() {
+    $("#result").slideUp();
+    $.getJSON("http://app.vikhyat.net/latex_to_unicode/"+encodeURIComponent($("input[name^=c]").attr("value")), function(json) {
+        update(json["result"]);
+    });
+  }
+  function update(str) {
+    $("#result").html(str).slideDown();
+  }
+  function example() {
+    $("input[name^=c]").attr("value", $("code").text());
+    $("p#example").slideUp();
+    $("input").click();
+  }
+</script>
+
+<p>This script attempts to convert LaTeX math-mode markup into a form that is 
+more readable. It tries to use Unicode characters wherever possible. </p>
+
+<p>The code used to convert the LaTeX to Unicode characters is on 
+<a href="https://github.com/vikhyat/latex-to-unicode">Github</a>. Please
+report any errors at the 
+<a href="https://github.com/vikhyat/latex-to-unicode/issues">Issue tracker</a>.
+</p>
+
+<form>
+  <label>Latex: <input type="text" name="c" style="width: 60%"></label>
+  <input type="submit" onclick="get_result(); return false;">
+</form>
+
+<p id="example">Example:
+<a onclick="example()"><code>\itA \in \bbR^{nxn}, \; \bfv \in \bbR^n, \; \lambda_i \in \bbR: \; \itA\bfv = \lambda_i\bfv</code></a>
+</p>
+
+<blockquote id="result" style="display:none; font-family: Arial"></blockquote>
+
+<p>An extension for Google Chrome is available that allows you to use this
+tool without leaving the page you are on. Unfortunately, it is not available
+in the Web Store, but you can install it by clicking 
+<a href="/assets/latex_to_unicode-0.3.crx">here</a>.</p>

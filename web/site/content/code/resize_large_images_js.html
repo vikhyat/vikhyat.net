@@ -1,0 +1,48 @@
+--- 
+title: Resize Large Images with Javascript
+---
+
+<p>This function will resize any images with dimensions above a specified
+set of dimensions while preserving the aspect ratio. Be sure to <strong>call
+the function only after every image has been loaded</strong>.</p>
+
+<% code(:javascript) do %>
+// Call this function *after* the page is completely loaded!
+function resize_images(maxht, maxwt, minht, minwt) {
+  var imgs = document.getElementsByTagName('img');
+
+  var resize_image = function(img, newht, newwt) {
+    img.height = newht;
+    img.width  = newwt;
+  };
+  
+  for (var i = 0; i < imgs.length; i++) {
+    var img = imgs[i];
+    if (img.height > maxht || img.width > maxwt) {
+      // Use Ratios to constraint proportions.
+      var old_ratio = img.height / img.width;
+      var min_ratio = minht / minwt;
+      // If it can scale perfectly.
+      if (old_ratio === min_ratio) {
+        resize_image(img, minht, minwt);
+      } 
+      else {
+        var newdim = [img.height, img.width];
+        newdim[0] = minht;  // Sort out the height first
+        // ratio = ht / wt => wt = ht / ratio.
+        newdim[1] = newdim[0] / old_ratio;
+        // Do we still have to sort out the width?
+        if (newdim[1] > maxwt) {
+          newdim[1] = minwt;
+          newdim[0] = newdim[1] * old_ratio;
+        }
+        resize_image(img, newdim[0], newdim[1]);
+      }
+    }
+  }
+}
+<% end %>
+
+<p>You can modify this code a bit to make it a little fancy. For an example, 
+look at this <a href="http://9861.smfforfree.com/index.php?topic=8.0">demo</a>,
+in which I have modified it using jQuery.</p>

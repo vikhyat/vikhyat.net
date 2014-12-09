@@ -1,0 +1,134 @@
+---
+title: Social Graph
+---
+
+<script type="text/javascript">
+  function status(text) {
+    $("#status").show();
+    $("#status").text(text);
+  }
+  
+  var id_to_name = new Object();
+  var data       = new Array();
+  var adj        = new Array();
+  
+  function get_data() {
+    status("Fetching friend list...");
+    FB.api('/me/friends', function(response) {
+      friends = response["data"]; // this should be global
+      $.each(friends, function(i, friend) {
+        id_to_name[friend["id"]] = friend["name"];
+        });
+      get_mutual_data(friends);
+    });
+  }
+  
+  function get_mutual_data(friends) {
+    if (friends.length > 0) {
+      var friend = friends[0];
+      status("Fetching mutual friends data (" + friends.length + " left)"); 
+      FB.api({ method: 'friends.getMutualFriends',
+        target_uid: friend["id"] },
+        function(response) {
+        data.push([friend["id"], response]);
+        get_mutual_data(friends.slice(1));
+        });
+    } else {
+      process_data();
+    }
+  }
+  function process_data() {
+    $.each(data, function(i, datum) {
+      status("Processing data: " + i + "/" + data.length);
+      var u1 = datum[0];
+      $.each(datum[1], function(j, u2) {
+        adj.push([id_to_name[u1], id_to_name[u2]].sort());
+        });
+      });
+    status("Generating graph...");
+    output_graph(adj.sort());
+  }
+  function output_graph(adj) {
+    out = $("#output");
+    out.append("graph {\n");
+    out.append("  outputorder=edgesfirst\n");
+    out.append("  overlap=prism\n")
+    out.append("  node [style=filled]\n");
+    for (var i=0; i<adj.length; i+=2) {
+      out.append('  "' + adj[i][0] + '" -- "' + adj[i][1] + "\"\n");
+    }
+    out.append('}');
+    out.show();
+    status("Done.");
+  }
+</script>
+
+<h2>How does this work?</h2>
+<p>After you log in, this page gets a list of all of your facebook friends.
+For each of your friends, it then obtains a list of mutual friends (i.e., common
+to you and the friend). This data is converted to the DOT language.</p>
+
+<p>Note that this page will display a popup at first to log into Facebook, if 
+  nothing seems to be happening try disabling your popup blocker.</p>
+
+<h2>How can I turn this into an image?</h2>
+<p>The DOT file can be turned into an image using the open source 
+<a href="http://www.graphviz.org/">Graphviz</a> software. On a Unix system the
+command you use will be something like 
+<code>dot -Tpng <dotfile> -o graph.png</code>.</p>
+
+<h2>Graphviz provides six different tools. Which one should I use?</h2>
+<p>You can look at examples of the output of each of the tools below. Note that
+<code>neato</code> becomes very slow if the number of friends you have on
+Facebook is much more than 100. Note that the names have been hidden in the 
+images below, and because of this, in some case, the output isn't completely
+representative of what you might get. In general, though, you won't go wrong
+with fdp.</p>
+
+<ol>
+  <li><a href="/assets/images/social_graph/dot.png">dot (5.3MB)</a></li>
+  <li><a href="/assets/images/social_graph/neato.png">neato (0.4MB)</a></li>
+  <li><a href="/assets/images/social_graph/fdp.png">fdp (0.4MB)</a></li>
+  <li><a href="/assets/images/social_graph/sfdp.png">sfdp (0.4MB)</a></li>
+  <li><a href="/assets/images/social_graph/twopi.png">twopi (0.4MB)</a></li>
+  <li><a href="/assets/images/social_graph/circo.png">circo (2.3MB)</a></li>
+</ol>
+
+<h2>Privacy</h2>
+<p>None of your data can be viewed by me unless you choose to send it to me.
+All of the processing is done on the browser and no data is sent to my 
+server, as can be verified by viewing the source of this page.</p>
+
+<div id="login" style="text-align:center;"></div>
+<div id="status"></div>
+<textarea id="output" rows="10" style="width:100%;display:none;"></textarea>
+
+<div id="fb-root"></div>
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+<script type="text/javascript">
+  FB.init({
+    appId  : '223299274356306',
+    status : true,
+    cookie : true,
+    xfbml  : true
+  });
+  FB.Event.subscribe('auth.sessionChange', function(response) {
+    window.location.reload();
+  });
+  FB.login(function(response) {
+    if (response.authResponse) {
+      get_data();
+    } else {
+      // user didn't login...
+    }
+  });
+  // FB.getLoginStatus(function(response) {
+  //   if (response.session) {
+  //     $("#login").html('<a href="#" onclick="FB.logout();">Logout</a>');
+  //     get_data();
+  //   } else {
+  //     $("#login").html('<fb:login-button width="200"></fb:login-button>');
+  //     FB.XFBML.parse();
+  //   }
+  // });
+</script>

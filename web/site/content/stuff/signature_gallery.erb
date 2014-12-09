@@ -1,0 +1,32 @@
+--- 
+title: Signature Gallery
+---
+
+<script src="/assets/galleria/galleria.js"></script>
+
+<%
+  images = Dir.glob('content/static/assets/images/signatures/*').sort_by do |f|
+    # Sort in reverse-chronological order.
+    - File.new(f).mtime.to_i
+  end
+%>
+
+<p>The images below may take some time to load. Reload the page if you see any
+errors.</p>
+
+<div class="gallery">
+  <% images.each do |image| %>
+    <img src="/<%= image.gsub('content/static/', '') %>" />
+  <% end %>
+  </ul>
+</div>
+
+<script>
+  Galleria.loadTheme('/assets/galleria/themes/classic/galleria.classic.min.js');
+  $(document).ready(function() {
+    $('.gallery').galleria({
+      max_scale_ratio: 1,
+      height: 250
+    });
+  });
+</script>

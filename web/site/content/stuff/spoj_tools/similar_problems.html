@@ -1,0 +1,20 @@
+---
+title: SPOJ Similar Problems
+---
+
+<p>A newer version of this tool is now available: <a href="/projects/problem_recommendations/">click here to go there</a>.</p>
+
+
+<script type="text/javascript">
+function update() {
+  document.getElementsByTagName("iframe")[0].src = "http://vikhyat.net/dyn/spoj/similar_problems/" + document.getElementsByName("c")[0].value;
+}
+</script>
+
+<form>
+  <label>Problem code: <input type="text" name="c" placeholder="(CODE)"></label>
+  <input type="submit" onclick="update(); return false;">
+</form>
+
+<iframe src="">
+</iframe>

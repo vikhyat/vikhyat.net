@@ -1,0 +1,295 @@
+--- 
+title: Code Snippets
+latex: true
+---
+
+<ul>
+  <li><a href="#djvupagecount">Extract Pagecount from a DjVu file</a></li>
+  <li><a href="#watchfile">Watch a File for Changes</a></li>
+  <li><a href="#imageclass">Simple Image Class (Ruby)</a></li>
+  <li><a href="#insertionsort">Insertion Sort</a></li>
+  <li><a href="#heapsort">Heapsort</a></li>
+</ul>
+
+<div class="section">
+  <h2><a name="djvupagecount">Extract Pagecount from a DjVu file</a></h2>
+
+  <p>We can use the <code>djvudump</code> tool to get the number of pages in a
+  DjVu file.</p>
+
+  <% code(:ruby) do %>
+    def pagecount(filename)
+      `djvudump "#{filename}"`.match(/files (\d+) pages/) {|m| m[1].to_i }
+    end
+  <% end %>
+</div>
+
+<div class="section">
+  <h2><a name="watchfile">(Ruby) Watch a File for Changes</a></h2>
+
+  <p><img src="/assets/images/watchfileforchanges.png" alt="Screenshot" /></p>
+
+  <p>This script will watch a file for changes and execute a callback whenever the file is changed. It works by caching an <code>md5</code> hash of the file and comparing it with the file periodically.</p>
+
+  <% code(:ruby) do %>
+    require 'digest/md5'
+
+    $md5 = ''
+
+    def watch(file, timeout, &cb)
+      $md5 = Digest::MD5.hexdigest(File.read(file))
+      loop do
+        sleep(timeout)
+        if (temp = Digest::MD5.hexdigest(File.read(file))) != $md5
+          $md5 = temp
+          cb.call(file)
+        end
+      end
+    end
+  <% end %>
+
+  <p>Usage Example:</p>
+
+  <% code(:ruby) do %>
+    $num = 0
+    watch '../num_diff.rb', 1 do |file|
+      puts "\e[31m MODIFIED: \e[0m \e[34m #{file} \e[0m (#{$num}, #{Time.now})"
+      puts "\e[32m     -- EXECUTING -- \e[0m"
+      puts
+      puts `ruby #{file}`
+      puts
+      puts "\e[32m -- FINISHED EXECUTION -- \e[0m"
+      puts
+      $num += 1
+    end
+  <% end %>
+</div>
+
+
+<div class="section">
+  <h2><a name="imageclass">(Ruby) Simple Image Class</a></h2>
+
+  <p>
+  This sets up an array of pixels, where each pixel is represented by an array 
+  of the form <code>[r, b, g]</code>, where <code>r</code>, <code>g</code> and 
+  <code>b</code> are numbers from 0 to 255 representing the intensities of 
+  red, green and blue corresponding to that pixel. <code>[0, 0, 0]</code> 
+  corresponds to black and <code>[255, 255, 255]</code> to white. Images can be
+  exported to the <a href="http://netpbm.sourceforge.net/doc/ppm.html">PPM</a>
+  format.
+  </p>
+
+  <% code(:ruby) do %>
+    class Image
+      attr_reader :width, :height, :data
+
+      def initialize(width, height)
+        @width, @height = width.to_i, height.to_i
+        @data = Array.new(height) { Array.new(width) { ['0', '0', '0'] } }
+      end
+
+      def set!(x, y, pix)
+        raise "Out of bounds: (#{x}, #{y})" if x > width-1 or y > height-1
+        @data[y][x] = pix
+      end
+
+      def to_ppm
+        return "P3\n#{@width} #{@height}\n255\n#{@data.flatten.join("\n")}"
+      end
+    end
+  <% end %>
+</div>
+
+
+<div class="section">
+  <h2><a name="insertionsort">(Ruby) Insertion Sort</a></h2>
+
+  <% code(:ruby) do %>
+    def insertion_sort(a)
+      1.upto(a.length-1) do |j|
+        key = a[j]
+        i = j-1
+        while i >= 0 and a[i] > key
+          a[i+1] = a[i]
+          i -= 1
+        end
+        a[i+1] = key
+      end
+      a
+    end
+
+    puts "Insertion sort on <5,2,4,6,1,3>"
+    p insertion_sort([5,2,4,6,1,3]) # => [1,2,3,4,5,6]
+  <% end %>
+
+  <p>Insertion sort's worst-case and average running time is \( \Theta(n^2) \). This can be seen quite clearly in the graph shown below.</p>
+
+  <p class="art_img"><img src="/assets/images/insertionsorttime.png" alt="Running Time Graph" /></p>
+
+  <p>This is the code used to generate the plot shown above:</p>
+
+  <% code(:ruby) do %>
+    def random_array(n)
+      Array.new(n) { rand(n**3)+1 }
+    end
+
+    def measure(&block)
+      t = Time.now
+      block.call
+      Time.now - t
+    end
+
+    1.upto(500) do |i|
+      t = 0.0
+      20.times do
+      a = random_array(i)
+      t += measure { insertion_sort(a) }
+    end
+    t /= 20
+
+    puts "#{i} #{t*1000}"  
+  <% end %>
+
+  <% code(:r) do %>
+    a <- read.table("data")
+    plot(a, type="l", main="Time taken by Insertion Sort for various input sizes", 
+    xlab="Size of array", ylab="Time Taken (ms)", font.lab=3, col.lab="#878787",
+    col="#404040")
+  <% end %>
+</div>
+
+<div class="section">
+  <h2><a name="heapsort">(Ruby) Heapsort</a></h2>
+
+  <p>To implement Heapsort, we first need a heap data structure.</p>
+
+  <% code(:ruby) do %>
+    class Heap
+      attr_accessor :heapsize
+      attr_reader   :data
+      def initialize
+        @data = []
+        @heapsize = 0
+      end
+
+      def parent(i)
+        i/2
+      end
+
+      def left(i)
+        2*i
+      end
+
+      def right(i)
+        2*i+1
+      end
+
+      def max_heapify(i)
+        l = left(i)
+        r = right(i)
+        largest = (l <= @heapsize and @data[l-1] > @data[i-1]) ? l : i
+        largest = r if r <= @heapsize and @data[r-1] > @data[largest-1]
+        if largest != i
+          @data[i-1], @data[largest-1] = @data[largest-1], @data[i-1]
+          max_heapify(largest)
+        end
+      end
+
+      def build_max_heap(a)
+        @heapsize = a.length
+        @data     = a
+        (@heapsize/2).downto(1) do |i|
+          max_heapify(i)
+        end
+      end
+
+      def max
+        @data[0]
+      end
+
+      def extract_max
+        fail "heap underflow" if @heapsize < 1
+        max = @data[0]
+        @data[0] = @data[@heapsize-1]
+        @heapsize -= 1
+        max_heapify(1)
+        max
+      end
+
+      def increase_key(i, key)
+        fail "new key is smaller than current key" if key < @data[i-1]
+        @data[i] = key
+        while i>1 and @data[parent(i)-1] < @data[i-1]
+          @data[i-1], @data[parent(i)-1] = @data[parent(i)-1], @data[i-1]
+          i = parent(i)
+        end
+      end
+
+      def heap_insert(key)
+        @heapsize += 1
+        @data[@heapsize-1] = -1.0/0
+        increase_key(@heapsize, key)
+      end
+    end
+  <% end %>
+
+  <p>Once we have have implemented a heap, implementing Heapsort is quite easy.</p>
+
+  <% code(:ruby) do %>
+    def heapsort(a)
+      h = Heap.new
+      h.build_max_heap(a)
+      a.length.downto(2) do |i|
+        a[0], a[i-1] = a[i-1], a[0]
+        h.heapsize -= 1
+        h.max_heapify(1)
+      end
+    end
+
+    t = [27,17,3,16,13,10,1,5,7,12,4,8,9,0]
+    heapsort(t)
+    p t # => [0, 1, 3, 4, 5, 7, 8, 9, 10, 12, 13, 16, 17, 27]
+  <% end %>
+
+  <p>Heapsort has running time \( O(n \; lg \, n) \), but a good implementation 
+  of quicksort will generally beat it in practice. Insertion sort can be faster 
+  for small arrays, but Heapsort is faster for larger arrays as shown in the 
+  graphs below.</p>
+
+  <p class="art_img"><img src="/assets/images/heapsorttime.png" alt="Running Time Graph" /></p>
+
+  <p>Graphs of running times for Insertion Sort and Heapsort for
+  <a href="/assets/images/insertionheapcomp1.png">[small arrays]</a> and
+  <a href="/assets/images/insertionheapcomp2.png">[large arrays]</a>.
+  </p>
+
+  <p>A slightly optimized version of heapsort which avoids creating a new heap 
+  for every array, and reduces the overhead due to procedure calls slightly is 
+  shown below. In my testing, it takes approximately 2 milliseconds lesser on 
+  inputs of size 500.</p>
+
+  <% code(:ruby) do %>
+    def max_heapify(a, i, heapsize)
+      l = 2*i + 1
+      r = l + 1
+      largest = (l < heapsize and a[l] > a[i]) ? l : i
+      largest = r if (r < heapsize and a[r] > a[largest])
+      if largest != i
+        a[i], a[largest] = a[largest], a[i]
+        max_heapify(a, largest, heapsize)
+      end
+    end
+
+    def heapsort(a)
+      heapsize = a.length
+      (a.length/2 - 1).downto(0) do |i|
+        max_heapify(a, i, heapsize)
+      end
+      (a.length-1).downto(1) do |i|
+        a[0], a[i] = a[i], a[0]
+        heapsize -= 1
+        max_heapify(a, 0, heapsize)
+      end
+    end
+  <% end %>
+</div>

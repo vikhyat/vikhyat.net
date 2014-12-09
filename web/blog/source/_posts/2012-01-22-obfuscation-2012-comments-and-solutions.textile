@@ -1,0 +1,219 @@
+---
+layout: post
+title: "Obfuscation 2012: Comments and Solutions"
+date: 2012-01-26 19:41
+comments: true
+categories: code algorithm contest
+---
+
+The contest has ended. Congratulations to the winners!
+
+<!-- more -->
+
+h2. Markov Bigrams
+
+You are working on a new “RPG Hero Name Generator” application. In order to generate the names, rather than going for a dictionary approach you decide to explore something more along the lines of Markov-chain text generation. Since you are generating character names rather than paragraphs, you treat each character as a state, and in order to simplify matters you make the assumption that each letter is independent of all of the letters coming before it except for its immediate predecessor.
+
+The input consists of two lines. The first character of the first line is the character to be considered. The rest of the line will consist of an arbitrary number of characters, this is the sample of text to be considered. Ignore the content of the second line. You are to output a single character, the one which occurs most frequently after the given character in the sample.
+
+The number of characters is small enough that you need not worry about exceeding the limits of int. The character string will consist of only uppercase or lowercase alphabets, you will not encounter any other characters.
+
+h3. Comments and Solution
+
+Despite the amount of jargon present, this is a fairly simple problem. The first paragraph only provides some context, and can be ignored for the sake of solving the problem. All that needs to be done in this problem is to count the frequencies of letter when they occur after a certain given character, and output the character that occurs most frequently.
+
+{% highlight c %}
+main() {
+  char c = getchar(), t, p = -1;
+  int freq[128] = {0};
+  
+  while ( (t = getchar()) != '\n' ) {
+    if (p == c)
+      freq[t] ++;
+    p = t;
+  }
+
+  for (t=0; t<127; t++)
+    if (freq[t] > freq[c])
+      c = t;
+
+  putchar(c);
+  return 0;
+}
+{% endhighlight %}
+
+The winning solution by M. is only 101 characters, can you bring this down to that? 
+
+h2. F1 Score
+
+You are working on a spam classification system using a new machine learning algorithm that you devised yourself. Surprised by its abysmal performance, you start to investigate how to improve its accuracy. You decide to run a genetic algorithm to pick the best among various variants of your algorithm. You have picked F1-score as the evaluation metric, and need an efficient implementation that will compute the F1-score.
+
+The first line of input to your program will be a single integer m (<= 100) that represents the size of your cross-validation set. This is followed by m lines, each containing two characters. Each character will be either a ‘+’ or a ‘-’. The first character represents the correct classification of an item in the cross-validation set, and the second character represents the output of your algorithm. As you might guess, ‘+’ corresponds to a positive classification and ‘-’ is a negative classification.
+
+Your program is to output the F1-score with respect to the cross-validation set, with two digits after the decimal point. The following formulae might help:
+
+\[ \text{precision} = \frac { \text{true positives} } {\text{true positives} + \text{false positives} } \]
+\[ \text{recall} = \frac {\text{true positives}} {\text{true positives} + \text{false negatives}} \]
+\[ \text{F1-score} = \frac {2 \times \text{precision} \times \text{recall}} {\text{precision} + \text{recall}} \]
+
+*Definitions*:
+
+* A true positive is an example that was correctly classified by your algorithm as positive.
+* A true negative is an example that was correctly classified as negative.
+* A false positive is an example that is actually negative, but which was classified as positive.
+* A false negative is a positive example that was incorrectly classified as negative.
+
+h3. Comments and Solution
+
+This was by far the easiest problem, it got the most submissions by a pretty large margin. The naive solution is shown below.
+
+{% highlight c %}
+#define eq(X, a) ((X[0] == a[0]) && (X[1] == a[1]))
+
+main() {
+  int t;
+  float tp, tn, fp, fn, p, r;
+  tp = tn = fp = fn = 0;
+  char c[3];
+  scanf("%d\n", &t);
+
+  while (t--) {
+    gets(c);
+    if (eq(c, "++")) tp++;
+    if (eq(c, "+-")) fn++;
+    if (eq(c, "-+")) fp++;
+    if (eq(c, "--")) tn++;
+  }
+
+  p = tp / (tp + fp);
+  r = tp / (tp + fn);
+
+  printf("%.2f", 2*p*r / (p+r));
+
+  return 0;
+}
+{% endhighlight %}
+
+The size of this solution can be brought down by taking into account, for one, the fact that "true negatives" are never used anywhere. Another thing to do would be to get rid of the intermediate precision and recall computations, and to compute the F1 score directly.
+
+The best solution by Ankit Gupta at 133 characters is truly a work of art. M.'s solution is also quite amazing, but the second optimization was not used; this increased the size of M.'s submission.
+
+h2. k-Nearest Neighbors
+
+Despite your best efforts, your classification algorithm doesn’t work out as well as you had hoped. Not one to be fazed by failure, you decide to go for a more standard algorithm this time, and after spending a short amount on Wikipedia you pick the k-Nearest Neighbors algorithm because of how easy it would be to implement.
+
+In order to further reduce complications, you decide that you don’t want to deal with implementing kNN in a feature-space with a large number of dimensions, and so you apply Principle Component Analysis to reduce the number of features to one and hope for the best. To simplify the problem even further, you decide to set k=1.
+
+The first line of input consists of a single integer n (< 100), the number of examples. This is followed by n lines each consisting of a single real number and a character (‘+’ or ‘-’) separated by a single space. The integer represents the value of the feature, and ‘+’ or ‘-’ represents the correct classification of the item that corresponds to the feature value.
+
+This is followed by a line containing a single integer m (<= 100), the number of queries. After this there will be m lines each containing a single integer, which is the value of the feature for the item you must classify. For each query output the classification of the example whose feature value is closest to the given integer.
+
+h3. Comments and Solution
+
+To summarize the problem, you will be given a set of integer-character pairs, and you need to output the character for which the lvalue (the integer which corresponds to the character) is closest to a given integer.
+
+{% highlight c %}
+main() {
+  int n, m, k, t=0, i;
+  scanf("%d\n", &n);
+  int s[n][2];
+
+  for (i=0; i<n; i++)
+    scanf("%d %c\n", &s[i][0], &s[i][1]);
+
+  scanf("%d\n", &m);
+
+  while (m--) {
+    scanf("%d\n", &k);
+    for (i=0; i<n; i++) {
+      if ( abs(k - s[t][0]) > abs(k - s[i][0]) )
+        t = i;
+    }
+    putchar(s[t][1]);
+  }
+
+  return 0;
+}
+{% endhighlight %}
+
+The best solution was submitted by Abhay Prakarsh, and has 157 characters.
+
+h2. Perceptron
+
+Surprisingly even the nearest neighbor approach didn’t work well. Your faculty advisor says that it is because of your abuse of Principle Component Analysis, but you think it is more due to the fact that kNN is a high variance algorithm, and your dataset is too noisy for it to work well. After some more research, you stumble upon an algorithm called Logistic Regression (a.k.a a single layer perceptron).
+
+The Logistic Regression algorithm basically involves fitting a given dataset to the function
+
+\[ f(z) = \frac 1 {1 + e^{-z}} \] 
+
+where z is the dot product of two vectors: a vector containing the “intercept” and “regression coefficients” and another containing the features. The dimensionality of the first vector is one larger than the dimensionality of the feature space, this is because of the intercept term. There are two ways to treat the bias term: one is to neglect it while performing the dot product and to add it to the result, the other is to add in an extra “1” at the front of the feature vector, which ends up having the same effect as the first method because the intercept is the first term of the first vector, and 1 becomes the first term of the second. 
+
+Since this algorithm is to be used for classification, a threshold value T is used: if the output of linear regression is greater than or equal to T the example is classified as positive, otherwise it is classified as negative. You make an arbitrary choice and pick T=0.5.
+
+You have already created the portion of the system that handles learning from the dataset, all that is left is to write the part that makes predictions on new items. The first line of input will contain two space-separated integers: the dimensionality of the feature space (d) and the number of items to be classified (q). This is followed by a line containing (d+1) integers which correspond to the vector with the intercept and regression coefficient. After this there will be q lines, each with d integers that correspond to the feature vector. For each of these q lines you are to output a single character, ‘+’ or ‘-’ depending on whether the input is classified as positive or negative. Both q and d are less than 50.
+
+h3. Comments and Solution
+
+{% highlight c %}
+#define classify(x) (((x) >= 0.5) ? '+' : '-')
+
+float sigmoid(float x) {
+  return 1 / (1 + exp((double) -x));
+}
+
+main() {
+  int d, q, i, a, t;
+  scanf("%d %d\n", &d, &q);
+  int beta[d+1];
+
+  for (i=0; i<d; i++)
+    scanf("%d ", &beta[i]);
+
+  scanf("%d\n", &beta[i]);
+
+  while (q--) {
+    a = beta[0];
+    for (i=1; d>i; i++) {
+      scanf("%d ", &t);
+      a += beta[i] * t;
+    }
+    scanf("%d\n", &t);
+    a += beta[i] * t;
+    putchar(classify(sigmoid(a)));
+  }
+
+  return 0;
+}
+{% endhighlight %}
+
+Note that is is possible to completely skip computing the sigmoid function, whenever \( z \geq 0 \) the classification would be positive, and when \( z < 0 \) the classification would be negative. The best solution by Piyush Kapoor comes in at 166 characters.
+
+h2. Coin Toss Game
+
+Roger challenges Dave to play a game involving coins. In the game, a fair coin is tossed n times. If, during the coin tosses, heads occurs two or more times in a row, Roger would win; otherwise Dave would win.
+
+Dave disagrees with Roger, because as n grows, so does Roger’s chances of winning. Eventually, both of them agree to arrange the bet amounts in such a way that both players end up with an equal expected gain. For this purpose, they need your help. You need to write a program that, for a given value of n, will output the probability of Dave winning the game.
+
+The first line of input will be a number t, the number of testcases. This will be followed by t lines, each containing a positive integer less than or equal to 20. For each integer, output the probability of Dave winning the game. Include 6 digits after the decimal point in your answer.
+
+h3. Comments and Solution
+
+I am going to omit the derivation, but it can be shown that the probability is \(\frac {F(n+2)} {2^n}\), where \( F(n) \) is the nth Fibonacci number.
+
+{% highlight c %}
+int fib(n) {
+  return n < 2 ? n : fib(n-1) + fib(n-2);
+}
+
+int main() {
+  int t, n;
+  scanf("%d\n", &t);
+  while (t--) {
+    scanf("%d\n", &n);
+    printf("%f\n", fib(n+2) / pow(2, n));
+  }
+  return 0;
+}
+{% endhighlight %}
+
+The best solution by Piyush Kapoor comes in at 136 characters. His solution computes the relevant Fibonacci number using an inline iterative method, and uses bit shifting to avoid requiring pow().

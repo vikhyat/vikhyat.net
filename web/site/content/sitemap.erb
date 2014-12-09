@@ -1,0 +1,31 @@
+<%=
+  require 'builder'
+
+  # Create builder
+  buffer = ''
+  xml = Builder::XmlMarkup.new(:target => buffer, :indent => 2)
+
+  # Check for required attributes
+  if @site.config[:base_url].nil?
+    raise RuntimeError.new("The Nanoc3::Helpers::XMLSitemap helper requires the site configuration to specify the base URL for the site.")
+  end
+
+  # Build sitemap
+  xml.instruct!
+  xml.urlset(:xmlns => 'http://www.google.com/schemas/sitemap/0.84') do
+    # Add item
+    @items.reject { |i| i.identifier =~ /^\/static/ or i[:is_hidden] }.each do |item|
+      item.reps.reject { |r| r.raw_path.nil? }.each do |rep|
+        xml.url do
+          xml.loc         @site.config[:base_url] + rep.path
+          xml.lastmod     item.mtime.to_iso8601_date unless item.mtime.nil?
+          xml.changefreq  item[:changefreq] unless item[:changefreq].nil?
+          xml.priority    item[:priority] unless item[:priority].nil?
+        end
+      end
+    end
+  end
+
+  # Return sitemap
+  buffer
+%>

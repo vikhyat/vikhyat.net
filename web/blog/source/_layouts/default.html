@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html class="ie ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]><html class="ie ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]><html class="ie ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--><html lang="en"> <!--<![endif]-->
+
+  <head>
+    <meta charset="utf-8">
+    <title>{{ page.title }} &laquo; Training Epoch</title>
+    <meta name="author" content="Vikhyat Korrapati">
+    <meta name="description" content="">
+
+    <!-- For Mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/blog/css/base.css">
+    <link rel="stylesheet" href="/blog/css/skeleton.css">
+    <link rel="stylesheet" href="/blog/css/layout.css">
+    <link rel="stylesheet" href="/blog/css/syntax.css">
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- MathJax -->
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+    <!-- Google Analytics -->
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-13153193-1']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+
+  </head>
+
+  <body>
+
+    <div class="container margintop">
+      <div class="offset-by-two">
+        <div class="six columns header-left">
+          <a href="/blog/">
+            <img src="/blog/images/logo.png" class="logo">
+          </a>
+        </div>
+        <div class="six columns nav">
+          <ul class="nav">
+            <li><a href="http://vikhyat.net/">Home</a></li>
+            <li class="active">Blog</li>
+            <li><a href="http://vikhyat.net/projects/">Projects</a></li>
+          </ul>
+        </div>
+        <div class="twelve columns">
+          <hr>
+          {{ content }}
+
+          <footer>
+            <p>&copy; Vikhyat Korrapati, 2014.</p>
+          </footer>
+
+        </div>
+      </div>
+    </div>
+
+
+  </body>
+
+</html>

@@ -1,0 +1,160 @@
+---
+title: Matrix Multiplication in Ruby
+latex: true
+created_at: 2011-04-20
+redirect: http://vikhyat.net/blog/archives/2011/04/20/matrix-multiplication-ruby/
+---
+
+<p>Ruby has an inbuilt <a href="http://www.ruby-doc.org/stdlib/libdoc/matrix/rdoc/classes/Matrix.html"><code>Matrix</code> class</a>, 
+which you should use in any serious application. In this article, we discuss
+how to implement matrix multiplication from scratch. We confine ourselves, for
+the sake of simplicity, to the multiplication of square matrices.</p>
+
+<h2>Representation of Matrices</h2>
+
+<p>We shall represent Matrices as 2-dimensional arrays. Every element of the 
+outer array will represent a row of the matrix.</p>
+
+<p>So, for instance, 
+\( \left( \begin{array}{ccc} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{array} \right) \)
+will be represented as <code>[[1,2,3], [4,5,6], [7,8,9]]</code>.</p>
+
+<p>We shall denote the element in the \(i\)th row and \(j\)th column of the 
+matrix called \(C\) as \(c_{ij}\). We can also write the matrix as 
+\(C=(c_{ij})\).</p>
+
+<h2>The Regular Method</h2>
+
+<p>We can find product \(C\) of two \(n \times n\) matrices, \(A\) and \(B\) 
+using the simple property that if \(C=A \cdot B\), then
+\[ c_{ij} = \sum\limits_{k=1}^n a_{ik} \cdot b_{kj} \]
+</p>
+
+<% code(:ruby) do %>
+def naive_matrix_mult(a, b)
+  n = a.length
+  # create a new n by n matrix with all elements initialized to 0.
+  c = Array.new(n) { Array.new(n) { 0 } }
+  0.upto(n-1) do |i|
+    0.upto(n-1) do |j|
+      0.upto(n-1) do |k|
+        c[i][j] += a[i][k] * b[k][j]
+      end
+    end
+  end
+  c
+end
+
+naive_matrix_mult([[1,2],[3,4]], [[5,6], [7,8]])
+# => [[19, 22], [43, 50]]
+<% end %>
+
+<p>Clearly, this will take \( \Theta(n^3) \) time to multiply two \(n \times n\)
+matrices.</p>
+
+<h2>Divide and Conquer</h2>
+
+<p>We can multiply matrices using the divide-and-conquer paradigm by splitting
+each of the matrices \(A\), \(B\) and \(C\) into four \(n/2 \times n/2\)
+matrices:
+\[ A = \left( \begin{array}{cc} A_{11} & A_{12} \\ A_{21} & A_{22} \end{array} \right), \]
+\[ B = \left( \begin{array}{cc} B_{11} & B_{12} \\ B_{21} & B_{22} \end{array} \right), \]
+\[ C = \left( \begin{array}{cc} C_{11} & C_{12} \\ C_{21} & C_{22} \end{array} \right). \]
+</p>
+
+<p>We can rewrite \( C=A \cdot B \) as
+\[ \left( \begin{array}{cc} C_{11} & C_{12} \\ C_{21} & C_{22} \end{array} \right) = 
+   \left( \begin{array}{cc} A_{11} & A_{12} \\ A_{21} & A_{22} \end{array} \right) \cdot
+   \left( \begin{array}{cc} B_{11} & B_{12} \\ B_{21} & B_{22} \end{array} \right). \]
+</p>
+
+<p>Hence, we get the four equations shown below.
+\[ C_{11} = A_{11} \cdot B_{11} + A_{12} \cdot B_{21}, \]
+\[ C_{12} = A_{11} \cdot B_{12} + A_{12} \cdot B_{22}, \]
+\[ C_{21} = A_{21} \cdot B_{11} + A_{22} \cdot B_{21}, \]
+\[ C_{22} = A_{21} \cdot B_{12} + A_{22} \cdot B_{22}. \]
+</p>
+
+<p>Hence, we have reduced the multiplication of two \(n \times n\) matrices to
+eight multiplications of \(n/2 \times n/2\) matrices and four \(n/2 \times n/2\)
+matrix additions. Each of the matrix addition will take \(\Theta(n^2)\) time.
+If we assume that the time taken to multiply two \(n \times n\) matrices is
+\(T(n)\), we get the recurrence,
+\[ T(n) = 8 T(n/2) + \Theta(n^2). \]
+</p>
+
+<p>The solution to this recurrence is \(\Theta(n^3)\), meaning that the
+divide-and-conquer method is not better than the naive method. The code shown
+below is a rather inefficient implementation of this method, which only works 
+when the matrix size is a power of 2.</p>
+
+<% code(:ruby) do %>
+def partition(a)
+  n = a.length
+  lim = (n-1)/2
+  a_11 = a[0..lim].map {|x| x[0..lim] }
+  a_12 = a[0..lim].map {|x| x[(lim+1)..(n-1)] }
+  a_21 = a[(lim+1)..(n-1)].map {|x| x[0..lim] }
+  a_22 = a[(lim+1)..(n-1)].map {|x|  x[(lim+1)..(n-1)] }
+  [a_11, a_12, a_21, a_22]
+end
+
+def combine(a_11, a_12, a_21, a_22)
+  n1 = a_11.length
+  n2 = a_21.length
+  c = Array.new(n1+n2) { nil }
+  for i in 0..(n1-1)
+    c[i] = a_11[i] + a_12[i]
+  end
+  for i in n1..(n1+n2-1)
+    c[i] = a_21[i-n1] + a_22[i-n1]
+  end
+  c
+end
+
+def add(a, b)
+  n = a.length
+  c = Array.new(n) { Array.new(n) { 0 } }
+  for i in 0..(n-1)
+    for j in 0..(n-1)
+      c[i][j] = a[i][j] + b[i][j]
+    end
+  end
+  c
+end
+
+def recursive_matrix_mult(a, b)
+  n = a.length
+  return [[]] if n == 0
+  return [[a[0][0] * b[0][0]]] if n == 1
+  a_11, a_12, a_21, a_22 = *partition(a)
+  b_11, b_12, b_21, b_22 = *partition(b)
+  
+  c_11 = add(recursive_matrix_mult(a_11, b_11),
+               recursive_matrix_mult(a_12, b_21))
+  c_12 = add(recursive_matrix_mult(a_11, b_12),
+               recursive_matrix_mult(a_12, b_22))
+  c_21 = add(recursive_matrix_mult(a_21, b_11),
+               recursive_matrix_mult(a_22, b_21))
+  c_22 = add(recursive_matrix_mult(a_21, b_12),
+               recursive_matrix_mult(a_22, b_22))
+  
+  combine(c_11, c_12, c_21, c_22)
+end
+<% end %>
+
+<h2>Other methods</h2>
+
+<p><a href="http://en.wikipedia.org/wiki/Strassen_algorithm">Strassen's 
+algorithm</a> can multiply two \(n \times n\) matrices in \(\Theta(n^{lg\; 7}) \approx \Theta(n^{2.807}) \)
+time. However, it is far more cumbersome to implement than the standard algorithm, 
+and is not numerically stable. Strassen's method is used in situations where 
+numerical stability is not critical and the matrices are large enough to provide 
+and advantage. Usually, Strassen's method is used until the size of the matrices 
+reaches a "crossover point", below which the standard method is used.</p>
+
+<p>The current theoretical optimum is the <a href="http://en.wikipedia.org/wiki/Coppersmith%E2%80%93Winograd_algorithm">
+Coppersmith-Winograd algorithm</a>, which runs in \(O(n^{2.376})\) time. It is 
+almost never used in practice because the constant factor is so large that 
+matrices of the size required to obtain an advantage over Strassen's method 
+cannot be processed by current hardware.</p>

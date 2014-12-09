@@ -1,0 +1,13 @@
+---
+title: "Articles"
+---
+
+
+<ul>
+<% items_under(:articles).sort_by {|i| i[:created_at] }.reverse.each do |i|  %>
+  <li>
+    <%= link_to i[:title], i %>
+    <span class="date">(<%= i[:created_at].strftime("%B %d, %Y") %>)</span>
+  </li>
+<% end %>
+</ul>
