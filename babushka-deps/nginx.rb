@@ -30,7 +30,7 @@ dep 'nginx configured' do
   met? do
     Dir.glob(dependency.load_path.parent / "nginx/*.erb").map do |config|
       file = config.split('/').last.gsub('.erb', '')
-      Babushka::Renderable.new( "/etc/nginx/sites-enabled" / file ).from? config
+      Babushka::Renderable.new("/etc/nginx/sites-enabled" / file).from? config
     end.all?
   end
 

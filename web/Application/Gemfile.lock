@@ -9,6 +9,7 @@ GEM
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
+    ruby-mysql (2.9.13)
     sinatra (1.4.5)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -28,6 +29,7 @@ PLATFORMS
 DEPENDENCIES
   json
   latex-to-unicode
+  ruby-mysql
   sinatra
   thin (~> 1.6.0)
   treetop

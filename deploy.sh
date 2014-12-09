@@ -1,13 +1,14 @@
 SERVER=106.187.44.241
 
-#echo "============= Compiling site... ========================================="
-#cd web/
-#rake clean
-#rake
-#cd ..
+echo "============= Compiling site... ========================================="
+cd web/
+rake clean
+rake
+cd ..
 
 echo "\n\n"
 echo "============= Copying source... ========================================="
+cat babushka-deps/config.rb | gpg --encrypt -r c@vikhyat.net > babushka-deps/config.rb.gpg
 rsync -e ssh -avl --progress --delete --exclude "web/Application/tmp/" --exclude "web/Application/log" . root@$SERVER:/var/vikhyat
 
 echo "\n\n"

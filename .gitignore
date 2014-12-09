@@ -1,4 +1,4 @@
-babushka-deps/config.yml
+babushka-deps/config.rb
 web/Output/
 web/blog/_site
 web/site/output
