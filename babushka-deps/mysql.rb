@@ -11,14 +11,13 @@ dep 'mysql installed' do
   packages = %w[mysql-server mysql-client libmysqlclient-dev]
 
   met? do
-    packages.all? {|package| shell "dpkg --get-selections | grep #{package}" }
+    packages.all? {|package| package_installed? package }
   end
 
   meet do
-    shell "echo mysql-server mysql-server/root_password password #{config(:mysql_root_password)} | debconf-set-selections"
-    shell "echo mysql-server mysql-server/root_password_again password #{config(:mysql_root_password)} | debconf-set-selections"
-    shell "apt-get install -y #{packages * ' '}", log: true
-    log "installed mysql"
+    debconf_set "mysql-server mysql-server/root_password", "password", config(:mysql_root_password)
+    debconf_set "mysql-server mysql-server/root_password_again", "password", config(:mysql_root_password)
+    install_packages(packages)
   end
 end
 

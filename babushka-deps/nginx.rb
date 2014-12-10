@@ -1,11 +1,10 @@
 dep 'nginx installed' do
   met? do
-    shell "dpkg --get-selections | grep nginx"
+    package_installed? "nginx"
   end
 
   meet do
-    shell "apt-get install -y nginx"
-    log "installed nginx"
+    install_package "nginx"
   end
 end
 
