@@ -1,0 +1,32 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          ghost
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      S 0 1 6
+# Short-Description: ghost initscript
+# Description:       ghost
+### END INIT INFO
+
+# Original author: Vikhyat Korrapati
+ 
+# Do NOT "set -e"
+
+ROOT=<%= root %>
+SCRIPT_NAME=/etc/init.d/ghost
+PIDFILE=/var/run/ghost.pid
+
+case "$1" in
+  start)
+        /sbin/start-stop-daemon --chdir $ROOT --background --pidfile $PIDFILE --make-pidfile --start --exec /usr/bin/npm -- start --production ;;
+  stop)
+        /sbin/start-stop-daemon --stop --pidfile $PIDFILE ;;
+  restart)
+        $SCRIPT_NAME stop && $SCRIPT_NAME start ;;
+  *)
+        echo "Usage: $SCRIPT_NAME {start|stop|restart}" >&2
+        exit 3 ;;
+esac
+
+:

@@ -1,9 +1,0 @@
-name: Training Epoch
-description: Vikhyat Korrapati's Blog
-url: http://vikhyat.net/blog/
-source: source
-plugins: ./_plugins
-destination: _site
-baseurl: /blog
-pygments: true
-permalink: /archives/:year/:month/:day/:title/

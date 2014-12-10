@@ -1,5 +1,3 @@
-require_relative 'config'
-
 def mysql(command, options={})
   user = options[:user] || "root"
   pass = options[:pass] || config("mysql_#{user}_password")
@@ -11,7 +9,7 @@ dep 'mysql installed' do
   packages = %w[mysql-server mysql-client libmysqlclient-dev]
 
   met? do
-    packages.all? {|package| package_installed? package }
+    packages_installed?(*packages)
   end
 
   meet do

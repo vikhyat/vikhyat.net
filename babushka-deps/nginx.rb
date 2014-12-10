@@ -42,8 +42,7 @@ dep 'nginx configured' do
   end
 
   after do
-    shell "service nginx restart"
-    log "Restarted nginx"
+    log_shell "restarting nginx", "service nginx restart"
   end
 end
 
