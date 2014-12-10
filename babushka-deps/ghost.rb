@@ -29,12 +29,13 @@ dep 'forever installed' do
 end
 
 dep 'ghost installed', :root do
-  root.default("/var/ghost")
-
   requires 'node installed'
   requires 'grunt installed'
 
   met? do
+    if root.p.exists?
+      log_shell "fetching custom casper git repo", "git fetch --all", cd: root
+    end
     root.p.exists? && !Babushka::GitRepo.new(root).behind?
   end
 
@@ -51,10 +52,32 @@ dep 'ghost installed', :root do
   end
 end
 
-dep 'ghost configured', :root do
-  root.default("/var/ghost")
+dep 'custom theme installed', :root do
+  path = root / "content/themes/casper-custom"
 
+  met? do
+    if root.p.exists?
+      log_shell "fetching custom casper git repo", "git fetch --all", cd: path
+    end
+    path.p.exists? && !Babushka::GitRepo.new(path).behind?
+  end
+
+  meet do
+    if path.p.exists?
+      log_shell "pulling custom casper theme", "git pull", cd: path
+    else
+      log_shell "cloning custom casper theme", "git clone https://github.com/vikhyat/Casper.git #{path}"
+    end
+  end
+
+  after do
+    log_shell "restarting ghost", "service ghost restart"
+  end
+end
+
+dep 'ghost configured', :root do
   requires 'forever installed'
+  requires 'custom theme installed'.with(root: root)
 
   met? do
     Babushka::Renderable.new(root / "config.js").from?(dependency.load_path.parent / "ghost/config.js.erb") &&
