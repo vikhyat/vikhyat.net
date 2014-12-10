@@ -18,6 +18,16 @@ dep 'grunt installed' do
   end
 end
 
+dep 'forever installed' do
+  met? do
+    shell? "which forever"
+  end
+
+  meet do
+    shell "npm install -g forever"
+  end
+end
+
 dep 'ghost installed', :root do
   root.default("/var/ghost")
 
@@ -43,6 +53,8 @@ end
 
 dep 'ghost configured', :root do
   root.default("/var/ghost")
+
+  requires 'forever installed'
 
   met? do
     Babushka::Renderable.new(root / "config.js").from?(dependency.load_path.parent / "ghost/config.js.erb") &&

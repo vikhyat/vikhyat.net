@@ -14,18 +14,21 @@
 # Do NOT "set -e"
 
 ROOT=<%= root %>
+DAEMON=/usr/local/bin/forever
 SCRIPT_NAME=/etc/init.d/ghost
-PIDFILE=/var/run/ghost.pid
+NODE_ENV=production
 
 case "$1" in
   start)
-        /sbin/start-stop-daemon --chdir $ROOT --background --pidfile $PIDFILE --make-pidfile --start --exec /usr/bin/npm -- start --production ;;
+        NODE_ENV=production $DAEMON --append --uid "ghost" --workingDir $ROOT --sourceDir $ROOT start index.js ;;
   stop)
-        /sbin/start-stop-daemon --stop --pidfile $PIDFILE ;;
+        $DAEMON stop ghost ;;
   restart)
         $SCRIPT_NAME stop && $SCRIPT_NAME start ;;
+  status)
+        $DAEMON list | grep ghost ;;
   *)
-        echo "Usage: $SCRIPT_NAME {start|stop|restart}" >&2
+        echo "Usage: $SCRIPT_NAME {start|stop|restart|status}" >&2
         exit 3 ;;
 esac
 
