@@ -17,4 +17,4 @@ ssh root@$SERVER -t "bash -l -c 'cd /var/vikhyat && babushka meet --no-color vik
 
 echo "\n\n"
 echo "============= Restarting application... =================================="
-ssh root@$SERVER -t "bash -l -c 'cd /var/vikhyat/web/Application && bundle exec thin restart --all /etc/thin'" | egrep -v '^[[:space:]]*$'
+ssh root@$SERVER -t "bash -l -c 'cd /var/vikhyat/web/Application && service thin restart'" | egrep -v '^[[:space:]]*$'

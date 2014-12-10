@@ -11,6 +11,7 @@ end
 dep 'thin configured', :root, :config_path do
   met? do
     Babushka::Renderable.new(config_path / "app.yaml").from?(dependency.load_path.parent / "thin/app.yaml.erb") &&
+    Babushka::Renderable.new("/etc/init.d/thin").from?(dependency.load_path.parent / "thin/init.erb") &&
       (root / "log").p.exists? &&
       (root / "tmp").p.exists?
   end
@@ -19,8 +20,9 @@ dep 'thin configured', :root, :config_path do
     shell "mkdir -p /etc/thin"
     shell "mkdir -p #{root}/log"
     shell "mkdir -p #{root}/tmp"
-    render_erb dependency.load_path.parent / "thin/app.yaml.erb",
-      to: config_path / "app.yaml"
+    render_erb dependency.load_path.parent / "thin/app.yaml.erb", to: config_path / "app.yaml"
+    render_erb dependency.load_path.parent / "thin/init.erb", to: "/etc/init.d/thin"
+    shell "chmod +x /etc/init.d/thin"
     log "copied thin config"
   end
 end
@@ -41,7 +43,7 @@ dep 'thin running' do
   end
 
   meet do
-    shell "bundle exec thin start --all #{config_path}", cd: app_root
+    shell "service thin start"
     sleep 5
     log "started thin"
   end
