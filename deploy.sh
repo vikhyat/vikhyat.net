@@ -16,5 +16,9 @@ echo "============= Running babushka... ======================================="
 ssh root@$SERVER -t "bash -l -c 'cd /var/vikhyat && babushka meet --no-color vikhyat-net'"
 
 echo "\n\n"
-echo "============= Restarting application... =================================="
+echo "============= Restarting application... ================================="
 ssh root@$SERVER -t "bash -l -c 'cd /var/vikhyat/web/Application && service thin restart'" | egrep -v '^[[:space:]]*$'
+
+echo "\n\n"
+echo "============= Making sure blog is running ==============================="
+ssh root@$SERVER -t "bash -l -c 'service ghost start'"
