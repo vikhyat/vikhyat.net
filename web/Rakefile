@@ -8,6 +8,7 @@ task :compile_nanoc do
     bundle exec nanoc co &&
     rm -rf ../Output/Vikhyat &&
     cp -R \"output\" \"../Output/Vikhyat\" &&
+    cp -R static/* \"../Output/Vikhyat\" &&
     cd ..
   "
 end
