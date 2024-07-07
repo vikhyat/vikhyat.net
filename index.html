@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vik's ML Research Blog</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        @font-face {
+            font-family: 'Geist Mono';
+            src: url('assets/fonts/geistmono/GeistMono-Light.woff2') format('woff2'),
+                url('assets/fonts/geistmono/GeistMono-Light.woff') format('woff');
+            font-weight: lighter;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Geist';
+            src: url('assets/fonts/geist/Geist-Regular.woff2') format('woff2'),
+                url('assets/fonts/geist/Geist-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Monaspace Neon';
+            src: url('assets/fonts/monaspaceneon/MonaspaceNeon-Regular.woff2') format('woff2'),
+                url('assets/fonts/monaspaceneon/MonaspaceNeon-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --text-light: #f0f0f0;
+            --bg-dark: #0a0a1f;
+            --heading-color: #ff3c3c;
+            --link-color: #ffd700;
+            --card-bg: rgba(26, 26, 26, 0.8);
+            --accent-color: #800000;
+        }
+
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Monaspace Neon', monospace;
+            font-size: 0.9rem;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero {
+            height: 15vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #050510, #0a0a1f);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30%;
+            background: linear-gradient(to top, var(--bg-dark), transparent);
+        }
+
+        h1,
+        h2 {
+            font-family: 'VT323', monospace;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            color: var(--heading-color);
+            font-size: 3rem;
+            text-align: center;
+            text-shadow: 3px 3px 0px #000;
+            z-index: 1;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 1s infinite alternate;
+            opacity: 0.6;
+        }
+
+        @keyframes twinkle {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            to {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+
+        .posts,
+        .about {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            padding: 25px;
+            box-shadow: 5px 5px 0px #000;
+        }
+
+        .card h2 {
+            color: var(--heading-color);
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+
+        .card ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .card li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .card li::before {
+            content: '>';
+            color: var(--link-color);
+            position: absolute;
+            left: 0;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--heading-color);
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        footer {
+            font-family: 'Geist Mono', sans-serif;
+            font-weight: lighter;
+            text-align: left;
+            opacity: 0.8;
+            margin-top: 40px;
+            color: var(--text-color);
+            text-shadow: 0 0 1px #fff;
+            font-size: 0.8rem;
+            border-top: 2px solid var(--accent-color);
+            padding-top: 20px;
+        }
+
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted var(--text-color);
+            cursor: pointer;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: var(--text-color);
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            /* Position the tooltip above the text */
+            left: 50%;
+            margin-left: -60px;
+            /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1>Vik's ML Nexus</h1>
+    </div>
+
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <h2>Latest Transmutations</h2>
+                <ul>
+                    <li><a href="#">The Philosopher's Algorithm: Decoding AGI</a></li>
+                    <li><a href="#">Neural Alchemy: Transforming Data into Wisdom</a></li>
+                    <li><a href="#">The Homunculus Project: AI Sentience Explored</a></li>
+                </ul>
+            </div>
+            <div class="card">
+                <h2>About Vik</h2>
+                <p>
+                    Vik specializes in developing efficient AI models for resource-constrained environments.
+                    He's the creator of <a href="https://moondream.ai/">moondream</a>, a compact open-source
+                    vision language model, aiming to make advanced computer vision accessible to all.
+                </p>
+                <p>
+                    Before moondream, Vik worked on distributed systems at AWS for nine years. And before that,
+                    he built the world's best anime recommendation engine at
+                    <span class="tooltip">Hummingbird<span class="tooltiptext">now known as Kitsu</span></span>.
+                </p>
+                <p>> <a href="https://x.com/vikhyatk">Follow Vik on Twitter</a></p>
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                © 2024 Vikhyat Korrapati. Visitors: 0000042 <br />
+                Best viewed in Netscape Navigator at 800x600 resolution.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        function createStars() {
+            const hero = document.querySelector('.hero');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.height = star.style.width;
+                star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                hero.appendChild(star);
+            }
+        }
+
+        createStars();
+    </script>
+</body>
+
+</html>
