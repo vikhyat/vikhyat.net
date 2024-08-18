@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vik's ML Research Blog</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        @font-face {
+            font-family: 'Geist Mono';
+            src: url('assets/fonts/geistmono/GeistMono-Light.woff2') format('woff2'),
+                url('assets/fonts/geistmono/GeistMono-Light.woff') format('woff');
+            font-weight: lighter;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Geist';
+            src: url('assets/fonts/geist/Geist-Regular.woff2') format('woff2'),
+                url('assets/fonts/geist/Geist-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Monaspace Neon';
+            src: url('assets/fonts/monaspaceneon/MonaspaceNeon-Regular.woff2') format('woff2'),
+                url('assets/fonts/monaspaceneon/MonaspaceNeon-Regular.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --text-light: #f0f0f0;
+            --bg-dark: #0a0a1f;
+            --heading-color: #ff3c3c;
+            --link-color: #ffd700;
+            --card-bg: rgba(26, 26, 26, 0.8);
+            --accent-color: #800000;
+        }
+
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Monaspace Neon', monospace;
+            font-size: 0.9rem;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .hero {
+            height: 15vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, #050510, #0a0a1f);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30%;
+            background: linear-gradient(to top, var(--bg-dark), transparent);
+        }
+
+        h1,
+        h2 {
+            font-family: 'VT323', monospace;
+            text-transform: uppercase;
+        }
+
+        .hero h1,
+        .hero h1 a {
+            color: var(--heading-color);
+            font-size: 3rem;
+            text-align: center;
+            text-shadow: 3px 3px 0px #000;
+            z-index: 1;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 1s infinite alternate;
+            opacity: 0.6;
+        }
+
+        @keyframes twinkle {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+
+            to {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+        }
+
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+
+        .posts,
+        .about {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        h2 {
+            color: var(--heading-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-color);
+            padding: 25px;
+            box-shadow: 5px 5px 0px #000;
+        }
+
+        .card h2 {
+            color: var(--heading-color);
+            margin-top: 0;
+            font-size: 1.8em;
+        }
+
+        .card h3 {
+            color: var(--heading-color);
+        }
+
+        .card ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .card li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            color: var(--heading-color);
+            text-shadow: 2px 2px 0px #000;
+        }
+
+        footer {
+            font-family: 'Geist Mono', sans-serif;
+            font-weight: lighter;
+            text-align: left;
+            opacity: 0.8;
+            margin-top: 40px;
+            color: var(--text-color);
+            text-shadow: 0 0 1px #fff;
+            font-size: 0.8rem;
+            border-top: 2px solid var(--accent-color);
+            padding-top: 20px;
+        }
+
+        .card pre {
+            background: var(--bg-dark);
+            border: 1px solid var(--accent-color);
+            color: var(--text-light);
+            padding: 20px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-weight: lighter;
+        }
+
+
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted var(--text-color);
+            cursor: pointer;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: var(--text-color);
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 0;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            /* Position the tooltip above the text */
+            left: 50%;
+            margin-left: -60px;
+            /* Center the tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="hero">
+        <h1><a href="../index.html">Vik's ML Nexus</a></h1>
+    </div>
+
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <h2>LNQA: A New Dataset for Visual Question Answering</h2>
+
+                <p>I recently developed <a href="https://huggingface.co/datasets/vikhyatk/lnqa">LNQA (Localized
+                        Narratives Question Answering)</a>, a dataset for visual question answering tasks. This post
+                    outlines the methodology and technical details of its creation.</p>
+
+                <div style="text-align: center;">
+                    <img src="../assets/images/lnqa.jpeg" alt="LNQA Dataset"
+                        style="max-height: 400px; margin-top: 20px">
+                </div>
+
+                <h3>Project Objectives</h3>
+
+                <p>The primary goals for LNQA were:</p>
+
+                <ol>
+                    <li>Develop a visual question answering dataset with natural language answers, moving beyond
+                        short-phrase responses.</li>
+                    <li>Utilize only open-source datasets and models to ensure clean licensing.</li>
+                </ol>
+
+                <p>This project was inspired by the Google Research paper <a href="https://arxiv.org/abs/2205.01883">All
+                        You May Need for VQA are Image Captions</a>.
+                    My approach aimed to streamline the process by leveraging larger language models and few-shot
+                    prompting instead of fine-tuning smaller models like T5.</p>
+
+                <h3>Methodology: Localized Narratives</h3>
+
+                <p>The foundation of LNQA is the Localized Narratives dataset, which consists of:</p>
+                <ol>
+                    <li>Images from the Open Images dataset</li>
+                    <li>Verbal descriptions by annotators, synchronized with mouse movements over relevant image areas
+                    </li>
+                    <li>Transcribed text from the audio descriptions</li>
+                </ol>
+
+                <p>Localized Narratives provides rich, detailed descriptions including spatial information, which is
+                    invaluable for generating nuanced question-answer pairs.</p>
+
+                <h3>Challenges and Solutions</h3>
+
+                <p>The primary challenge was handling transcription errors in the Localized Narratives dataset. To
+                    address this, I implemented a two-stage pipeline:</p>
+
+                <ol>
+                    <li><strong>Fact Extraction:</strong> Using Mixtral-8x7B to extract a list of facts from the
+                        description, accounting for potential transcription errors.</li>
+                    <li><strong>Question-Answer Generation:</strong> Employing Mixtral-8x7B again to generate
+                        question-answer pairs based on the extracted facts.</li>
+                </ol>
+
+                <p>To enhance the dataset's robustness, I introduced "absurd" questions - intentionally irrelevant
+                    queries to teach the model to recognize when a question is not applicable to an image. To avoid
+                    model collapse and ensure diversity in these questions, I implemented an external noun list. The
+                    model receives three potential topics from this list as inspiration for generating the absurd
+                    question, injecting external entropy into the process.</p>
+
+                <h3>Improving Accuracy with DSPy</h3>
+
+                <p>To further enhance the quality of the generated question-answer pairs, I utilized DSPy for generating
+                    few-shot chain-of-thought prompts. Here's the full DSPy program used, including the prompts:</p>
+
+                <pre>
+class FactExtractionSignature(dspy.Signature):
+    """
+    Extract factual knowledge from a transcript of a person describing an image. The transcripts
+    are converted from speech to text and may contain errors, so exclude any facts that seem out
+    of context or that might have resulted from a transcription error.
+    """
+
+    transcript = dspy.InputField()
+    facts = dspy.OutputField()
+
+
+class ConversationSignature(dspy.Signature):
+    """
+    Given a series of facts about an image, design a series of questions and answers based them.
+    Pretend that the person writing answers is looking at the image directly, and do not make any
+    reference to a list of facts.
+
+    Only create questions that can be answered definitively from one or more of the facts.
+    Do not use first person language or make any assumptions about the image.
+    Use simple and clear language.
+    Create diverse question, e.g. what, where, when, why, how, how many.
+    Do not ask any yes/no questions.
+    Do not ask any questions that cannot be answered definitively.
+
+    If you reference the list of facts or acknowledge that you were given any facts instead of making
+    it seem like you are looking at the image directly, three puppies will die.
+
+    Include exactly one "absurd" question, i.e. a trick question about something that is not present in
+    the image. Do not call the question "absurd" or "trick" in the answer, be polite and professional
+    when saying it isn't present in the image. I am providing three potential topics you can use as
+    inspiration.
+    """
+
+    facts = dspy.InputField(desc="factual knowledge about the image")
+    absurd_topics = dspy.InputField()
+    conversation = dspy.OutputField(prefix="Conversation:\n\n")
+    absurd = dspy.OutputField(prefix="Absurd Question/Answer:\n\n")
+
+
+class Conversation(dspy.Module):
+    def __init__(self):
+        super().__init__()
+        self.facts = dspy.ChainOfThought(FactExtractionSignature)
+        self.desc = dspy.ChainOfThought(
+            ConversationSignature,
+            rationale_type=dsp.Type(
+                prefix="Reasoning: Let's think step by step in order to",
+                desc="${produce the conversation}. We ...",
+            ),
+        )
+
+    def forward(self, transcript):
+        facts = self.facts(transcript=transcript)
+        conv = self.desc(
+            facts=facts.facts, absurd_topics=", ".join(random.sample(nouns, 3))
+        )
+
+        conv.conversation = clean(conv.conversation)
+        conv.absurd = clean(conv.absurd)
+
+        return conv, facts</pre>
+
+                <p>This DSPy program was trained on a set of 16 manually annotated images to generate effective few-shot
+                    prompts. The prompts in the class docstrings provide detailed instructions for fact extraction and
+                    conversation generation, including guidelines for creating diverse questions and handling "absurd"
+                    questions.</p>
+
+                <h3>Post-Processing and Filtering</h3>
+
+                <p>The generated answers underwent a cleaning process to remove malformed data and unhelpful responses.
+                    Due to budget constraints, instead of using the model for filtering, I employed the following
+                    method:</p>
+                <ol>
+                    <li>Generated embeddings for each Q&A pair using the Jina embedding model</li>
+                    <li>Clustered the embeddings</li>
+                    <li>Manually removed clusters with a high proportion of low-quality responses</li>
+                </ol>
+
+                <h3>Results</h3>
+
+                <p>The final LNQA dataset comprises:</p>
+                <ul>
+                    <li>303,000 images</li>
+                    <li>1.5 million question-answer pairs</li>
+                </ul>
+
+                <p>While smaller in scale compared to some existing datasets (such as the 3 million images in the Google
+                    Research paper), LNQA offers unique advantages with its focus on natural language answers and clean
+                    licensing.</p>
+
+                <h3>Availability and Applications</h3>
+
+                <p>LNQA was released on <a href="https://huggingface.co/datasets/vikhyatk/lnqa">Hugging Face</a> in
+                    April 2024. It's designed for training
+                    vision-language models that require conversational responses to visual inputs. Potential
+                    applications include improving chatbots, developing assistive technologies for the visually
+                    impaired, and advancing human-AI interaction in visual contexts.</p>
+
+                <p>If you use LNQA in your research or applications, I'd be interested in hearing about your experiences
+                    and findings.</p>
+
+                <p>You can find me on <a href="https://x.com/vikhyatk">Twitter</a> if you have any questions!</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>
+                © 2024 Vikhyat Korrapati. Visitors: 0000042 <br />
+                Best viewed in Netscape Navigator at 800x600 resolution.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        function createStars() {
+            const hero = document.querySelector('.hero');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3 + 1}px`;
+                star.style.height = star.style.width;
+                star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                hero.appendChild(star);
+            }
+        }
+
+        createStars();
+    </script>
+</body>
+
+</html>
