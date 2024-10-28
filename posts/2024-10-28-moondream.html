@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Terminal Blog</title>
+        <style>
+            @font-face {
+                font-family: 'Monaspace Neon';
+                src: url('../assets/fonts/monaspaceneon/MonaspaceNeon-Regular.woff2') format('woff2'),
+                    url('../assets/fonts/monaspaceneon/MonaspaceNeon-Regular.woff') format('woff');
+                font-weight: normal;
+                font-style: normal;
+            }
+
+            body {
+                background-color: #9c27b0;
+                margin: 0;
+                padding: 40px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                font-family: 'Monaspace Neon', monospace;
+                font-size: 14px;
+            }
+
+            .terminal-container {
+                position: relative;
+                width: 100%;
+                max-width: 800px;
+            }
+
+            .terminal-shadow {
+                position: absolute;
+                top: 10px;
+                left: 8px;
+                right: -8px;
+                bottom: -10px;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 1;
+            }
+
+            .terminal-window {
+                position: relative;
+                z-index: 2;
+                background: #d3d3d3;
+                color: #000000;
+                width: 100%;
+            }
+
+            .terminal-header {
+                background: #d3d3d3;
+                text-align: center;
+                padding: 4px 2px;
+                padding-bottom: 0;
+            }
+
+            .terminal-content {
+                background: #d3d3d3;
+                padding: 1px;
+            }
+
+            .dialog-box {
+                margin: 6px 4px;
+                border: 1px solid #000;
+                background: #d3d3d3;
+                padding: 20px;
+            }
+
+            .post-title {
+                text-align: center;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+
+            .post-meta {
+                text-align: center;
+                margin-bottom: 30px;
+                font-style: italic;
+            }
+
+            .post-content p {
+                margin: 10px 0;
+                text-align: justify;
+            }
+
+            .ok-prompt {
+                text-align: center;
+                margin-top: 20px;
+                color: #000000;
+            }
+
+            a {
+                color: #000000;
+            }
+
+            .navigation {
+                text-align: center;
+                margin-top: 15px;
+                color: #000000;
+            }
+
+            hr {
+                border: none;
+                border-top: 1px solid #000000;
+                margin: 15px 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="terminal-container">
+            <div class="terminal-shadow"></div>
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <a href="../index.html">Vik's ML Nexus</a>
+                </div>
+                <div class="terminal-content">
+                    <div class="dialog-box">
+                        <div class="post-title">
+                            Elbows out
+                        </div>
+                        <div class="post-meta">
+                            (posted by sysadmin on 2024-10-28)
+                        </div>
+                        <div class="post-content">
+                            <p>
+                                We just announced <a href="https://venturebeat.com/ai/moondream-raises-4-5m-to-prove-that-smaller-ai-models-can-still-pack-a-punch/" target="_blank">
+                                raising a $4.5M seed round</a> to help <a href="https://github.com/vikhyat/moondream">Moondream</a>
+                                deliver vision AI that works reliably and runs everywhere.
+                            </p>
+                            <hr>
+                            <p>
+                                Large language models won out over traditional NLP techniques in many cases because
+                                they offer a better developer experience. Companies using LLMs in production
+                                are often using them for tasks like entity extraction and
+                                classification, not the new capabilities they enable.
+                            </p>
+                            <p>
+                                The key benefit of LLMs is that they make it possible for normal developers
+                                to deploy these capabilities. Companies no longer have to staff expensive
+                                ML teams or deal with data labeling and model training.
+                            </p>
+                            <hr>
+                            <p>
+                                A similar trend will play out in computer vision over the next few years.
+                                But we have a lot of work ahead of us to make that happen.
+                            </p>
+                            <p>
+                                Vision language models available today just don't work reliably on the tasks
+                                you care about when building AI applications. While our competitors
+                                <a href="https://x.com/elonmusk/status/1850724646414606406">waste time training
+                                their models to explain jokes</a>, we're laser-focused on delivering the accuracy
+                                you need on tasks that actually matter, like
+                                <a href="https://x.com/vikhyatk/status/1841896126276108503">reading gauges</a>.
+                            </p>
+                            <p>
+                                Model footprint is another key issue in vision. These models need to run in
+                                edge environments, and they need to run fast. We're building distillation
+                                tools and inference libraries to make it possible to deploy vision AI in any
+                                environment. There's no reason you can't have your cake, and eat it too.
+                            </p>
+                            <hr>
+                            <p>
+                                We're proud to be backed by the world's best investors: Felicis, the
+                                Microsoft/Github M12 fund, and Ascend. Whether you're a developer looking
+                                to integrate vision AI, or an enterprise seeking efficient solutions, we'd
+                                love to <a href="mailto:contact@moondream.ai">show you what Moondream can
+                                do</a>.
+                            </p>
+                        </div>
+                        <div class="ok-prompt"><a href="../index.html">&lt;Ok&gt;</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
